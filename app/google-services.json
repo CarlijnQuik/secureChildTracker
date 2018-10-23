@@ -1,0 +1,99 @@
+{
+  "project_info": {
+    "project_number": "957366363443",
+    "firebase_url": "https://mychildtracker.firebaseio.com",
+    "project_id": "mychildtracker",
+    "storage_bucket": "mychildtracker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957366363443:android:7b10e8132d67743d",
+        "android_client_info": {
+          "package_name": "com.example.carli.mychildtracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "957366363443-vtta7u9l5dokndj0tvivbcoumpa7vrdv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.carli.mychildtracker",
+            "certificate_hash": "d080be29717efe2d8cdefe48a0455c4863353d42"
+          }
+        },
+        {
+          "client_id": "957366363443-jcliq1q2nbr259f28fu32981tk14sbt5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNfVu0g2ZDJ80vfGsVL9H6VOQYJ63bAas"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "957366363443-jcliq1q2nbr259f28fu32981tk14sbt5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957366363443:android:c53ee7abe7f9b52a",
+        "android_client_info": {
+          "package_name": "com.example.carli.mychildtrackerdisplay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "957366363443-bg8nbb8qrf9rjppmlk80ncafquno35s5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.carli.mychildtrackerdisplay",
+            "certificate_hash": "d080be29717efe2d8cdefe48a0455c4863353d42"
+          }
+        },
+        {
+          "client_id": "957366363443-jcliq1q2nbr259f28fu32981tk14sbt5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNfVu0g2ZDJ80vfGsVL9H6VOQYJ63bAas"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "957366363443-jcliq1q2nbr259f28fu32981tk14sbt5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
