@@ -1,8 +1,10 @@
 package com.example.carli.mychildtrackerdisplay;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -41,13 +43,27 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        findViewById(R.id.bLogOut).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Code here executes on main thread after user presses button
+                FirebaseAuth.getInstance().signOut();
+                signOut();
+            }
+        });;
     }
+
+    private void signOut(){
+        Intent intent=new Intent(this,LoginActivity.class);
+        startActivity(intent);
+
+    };
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // Authenticate with Firebase when the Google map is loaded
         mMap = googleMap;
-        mMap.setMaxZoomPreference(16);
+        mMap.setMaxZoomPreference(10);
         subscribeToUpdates();
 
     }

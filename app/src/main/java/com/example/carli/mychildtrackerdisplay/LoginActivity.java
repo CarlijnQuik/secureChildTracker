@@ -178,5 +178,11 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
 
     }
 
+    private void signOut(){
+        Intent intent=new Intent(this,LoginActivity.class);
+        startActivity(intent);
+
+    };
+
 }
 
