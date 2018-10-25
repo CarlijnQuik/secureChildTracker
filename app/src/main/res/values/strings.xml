@@ -1,7 +1,46 @@
 <resources>
-    <string name="app_name">MyChildTrackerDisplay</string>
-    <string name="title_activity_display">Map</string>
+    <string name="notification_text">Tracking, tap to cancel</string>
+    <string name="transport_id" translatable="false">123</string>
     <string name="firebase_path" translatable="false">locations</string>
-    <string name="firebase_email" translatable="false">carlijn_smile@hotmail.com</string>
-    <string name="firebase_password" translatable="false">Hoi123</string>
+    <string name="firebase_email" translatable="false">carlijn@test.nl</string>
+    <string name="firebase_password" translatable="false">123456</string>
+    <string name="app_name">My Child Tracker Display</string>
+
+    <string name="hint_user_id">User ID</string>
+    <string name="sign_in">Log In</string>
+    <string name="create_account">Create Account</string>
+    <string name="sign_out">Log Out</string>
+    <string name="signed_out">Logged Out</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="auth_failed">Authentication failed</string>
+    <string name="example_id">Firebase User ID: 123456789abc</string>
+    <string name="emailpassword_status_fmt">Email User: %s</string>
+    <string name="firebase_status_fmt">Firebase User: %s</string>
+    <string name="loading">Loading…</string>
+
+    <string name="welcome">Welcome to the My Child Tracker App!</string>
+    <string name="welcome_home">Choose what you want to do...</string>
+    <string name="pick_username">Pick a username</string>
+    <string name="username">Username</string>
+
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="log_out">Log Out</string>
+
+    <string name="button_next">Next</string>
+    <string name="button_previous">Previous</string>
+
+    <string name="published_by">Published By</string>
+    <string name="description">Description</string>
+    <string name="add">Add book</string>
+
+    <string name="contentdescription">Image Display</string>
+
+    <string name="searching">Searching...</string>
+
+    <string name="empty_list">Your list is empty</string>
+
+    <string name="log_out_question">Are you sure you want to log out?</string>
+    <string name="child_or_parent">Are you a parent?</string>
 </resources>
