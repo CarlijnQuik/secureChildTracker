@@ -37,6 +37,7 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
         user =  FirebaseAuth.getInstance().getCurrentUser();
+        Log.d(TAG, "user update " + user.getUid());
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -47,20 +48,18 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         // Authenticate with Firebase when the Google map is loaded
         mMap = googleMap;
         mMap.setMaxZoomPreference(16);
-        if (user != null)
-            subscribeToUpdates();
+        subscribeToUpdates();
+
     }
 
     private void subscribeToUpdates() {
-        Log.d(TAG, "user update " + user.getUid());
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(user.getUid());
+        Log.d(TAG, "checking Carlijn" + ref);
         ref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-                Log.d(TAG, "data snapshot" + dataSnapshot);
-                Log.d(TAG, "previousChildName " + previousChildName);
-                //setMarker(dataSnapshot);
+                Log.d(TAG, "datasnapshot " + dataSnapshot);
+                setMarker(dataSnapshot);
             }
 
             @Override
@@ -83,6 +82,9 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         });
     }
 
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
 
     private void setMarker(DataSnapshot dataSnapshot) {
         // When a location update is received, put or update
@@ -92,9 +94,7 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         String key = dataSnapshot.getKey();
         HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
         double lat = Double.parseDouble(value.get("latitude").toString());
-        Log.d(TAG, "lat update " + lat);
         double lng = Double.parseDouble(value.get("longitude").toString());
-        Log.d(TAG, "long update " + lng);
         LatLng location = new LatLng(lat, lng);
         if (!mMarkers.containsKey(key)) {
             mMarkers.put(key, mMap.addMarker(new MarkerOptions().title(key).position(location)));
