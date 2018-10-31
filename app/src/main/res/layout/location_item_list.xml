@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:layout_width="75dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/contentdescription"
+        app:srcCompat="@mipmap/location"
+        android:id="@+id/ivImage"
+        android:layout_alignTop="@+id/tvTimestamp"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:text="Latitude"
+        android:textColor="@android:color/black"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvLatitude"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/tvTimestamp"
+        android:layout_alignStart="@+id/tvTimestamp" />
+
+    <TextView
+        android:text="Longitude"
+        android:textColor="@android:color/black"
+        android:layout_width="100dp"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvLongitude"
+        android:layout_below="@+id/tvTimestamp"
+        android:layout_toEndOf="@+id/tvLatitude"
+        android:layout_marginStart="12dp" />
+
+    <TextView
+        android:text="Timestamp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvTimestamp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="27dp"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/ivImage"/>
+</RelativeLayout>

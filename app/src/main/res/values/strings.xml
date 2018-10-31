@@ -43,4 +43,8 @@
 
     <string name="log_out_question">Are you sure you want to log out?</string>
     <string name="child_or_parent">Are you a parent?</string>
+    <string name="title_activity_navigation">NavigationActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

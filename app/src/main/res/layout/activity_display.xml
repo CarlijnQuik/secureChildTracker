@@ -13,16 +13,41 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="300dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         tools:context=".DisplayActivity" />
 
-<Button
-    android:id="@+id/bLogOut"
-    android:layout_width="130dp"
-    android:layout_height="54dp"
-    android:layout_centerHorizontal="true"
-    android:layout_alignParentTop="true"
-    android:layout_marginTop="500dp"
-    android:text="Sign Out" />
+    <ImageView
+        android:id="@+id/qrDisplay"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:contentDescription="Display"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
+
+    <Button
+        android:id="@+id/bLogOut"
+        android:layout_width="130dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="550dp"
+        android:layout_marginStart="250dp"
+        android:text="Sign Out" />
+
+    <Button
+        android:id="@+id/pairPhone"
+        android:layout_width="130dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="550dp"
+        android:layout_marginStart="50dp"
+        android:text="Pair child phone" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="300dp"
+        android:id="@+id/listView1" />
+
 
 </RelativeLayout>
