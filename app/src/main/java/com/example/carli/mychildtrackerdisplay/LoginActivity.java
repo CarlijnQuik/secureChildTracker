@@ -82,8 +82,7 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
         }
 
     }
-
-
+    
     @Override
     public void onClick(View v) {
         int i = v.getId();

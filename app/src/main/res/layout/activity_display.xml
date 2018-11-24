@@ -42,7 +42,7 @@
         android:layout_height="54dp"
         android:layout_marginTop="550dp"
         android:layout_marginStart="50dp"
-        android:text="Pair child phone" />
+        android:text="Generate QR code" />
 
     <ListView
         android:layout_width="match_parent"

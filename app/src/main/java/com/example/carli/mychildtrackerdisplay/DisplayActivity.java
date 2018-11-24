@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -59,9 +60,11 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
     LocationAdapter locationAdapter;
     AlertDialog.Builder builder;
     Location location;
+    Button pairButton;
 
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
+    int QRVisible = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,12 +82,18 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         user =  FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference(user.getUid());
 
+        // define views
+        QRCode = (ImageView) findViewById(R.id.qrDisplay);
+        pairButton = (Button) findViewById(R.id.pairPhone);
+
+
         // initialize the map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-    }
+        }
+
 
     public void initializeAdapter(){
         // set the list adapter
@@ -106,11 +115,21 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
 
         // decide what clicking the generate QR code button does
         findViewById(R.id.pairPhone).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Code here executes on main thread after user presses button
+        public void onClick(View v) {
+            if (QRVisible == 1) {
+                QRCode.setVisibility(View.INVISIBLE);
+                pairButton.setText("Generate QR code");
+                QRVisible = 0;
+            } else if (QRVisible == 0){
                 generateQR();
+                QRCode.setVisibility(View.VISIBLE);
+                pairButton.setText("Close QR code");
+                QRVisible = 1;
+
             }
+        }
         });;
+
 
     }
 
@@ -121,8 +140,7 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
 
     // generates a QR code and displays it on the screen
     private void generateQR(){
-
-        String randomString = random();
+        String randomString = "Hola!";
 
         QRGEncoder qrgEncoder = new QRGEncoder(randomString,
                 null,
@@ -139,10 +157,13 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
             Bitmap bitmap = qrgEncoder.encodeAsBitmap();
 
             // Setting Bitmap to ImageView
-            QRCode = (ImageView) findViewById(R.id.qrDisplay);
+
             QRCode.setImageBitmap(bitmap);
             //QRCode.setVisibility(View.VISIBLE);
             //QRGSaver.save(savePath, edtValue.getText().toString().trim(), bitmap, QRGContents.ImageType.IMAGE_JPEG);
+
+
+
 
         } catch (WriterException e) {
             Log.v(TAG, e.toString());
@@ -257,21 +278,5 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
 
             return location;
         }
-
-        // generate a random string
-        public static String random () {
-            int MAX_LENGTH = 10;
-            Random generator = new Random();
-            StringBuilder randomStringBuilder = new StringBuilder();
-            int randomLength = generator.nextInt(MAX_LENGTH);
-            char tempChar;
-            for (int i = 0; i < randomLength; i++) {
-                tempChar = (char) (generator.nextInt(96) + 32);
-                randomStringBuilder.append(tempChar);
-            }
-            return randomStringBuilder.toString();
-        }
-
-
 
 }
