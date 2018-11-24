@@ -112,12 +112,16 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
                         if (!task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, R.string.auth_failed, LENGTH_SHORT).show();
                         } else if (task.isSuccessful()) {
-                            forwardUser();
+                            forwardNewUser();
                         }
 
                         hideProgressDialog();
                     }
                 });
+
+    }
+
+    public void forwardNewUser(){
 
     }
 
@@ -127,7 +131,6 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
         }
 
         showProgressDialog();
-
         // start log in with email
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -175,6 +178,7 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
         //finish();
 
     }
+
 
     private void signOut(){
         Intent intent=new Intent(this,LoginActivity.class);

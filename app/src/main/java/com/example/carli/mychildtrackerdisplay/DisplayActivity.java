@@ -48,7 +48,6 @@ import androidmads.library.qrgenearator.QRGSaver;
 
 public class DisplayActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    // test branch
     private static final String TAG = "logged";
     private HashMap<String, Marker> mMarkers = new HashMap<>();
     private GoogleMap mMap;

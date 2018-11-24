@@ -1,0 +1,13 @@
+package com.example.carli.mychildtrackerdisplay;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+public class createUserActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create_user);
+    }
+}
