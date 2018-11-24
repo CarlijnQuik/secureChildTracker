@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -45,6 +46,8 @@ import java.util.Random;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 import androidmads.library.qrgenearator.QRGSaver;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 public class DisplayActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -106,31 +109,30 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
     public void initializeButtons(){
         // decide what clicking the logout button does
         findViewById(R.id.bLogOut).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Code here executes on main thread after user presses button
-                FirebaseAuth.getInstance().signOut();
-                signOut();
-            }
-        });;
+          public void onClick(View v) {
+              // Code here executes on main thread after user presses button
+              FirebaseAuth.getInstance().signOut();
+              signOut();
+              Toast.makeText(DisplayActivity.this, "Signed out", LENGTH_SHORT).show();
+          }
+        });
 
         // decide what clicking the generate QR code button does
         findViewById(R.id.pairPhone).setOnClickListener(new View.OnClickListener() {
-        public void onClick(View v) {
-            if (QRVisible == 1) {
-                QRCode.setVisibility(View.INVISIBLE);
-                pairButton.setText("Generate QR code");
-                QRVisible = 0;
-            } else if (QRVisible == 0){
-                generateQR();
-                QRCode.setVisibility(View.VISIBLE);
-                pairButton.setText("Close QR code");
-                QRVisible = 1;
+            public void onClick(View v) {
+                if (QRVisible == 1) {
+                    QRCode.setVisibility(View.INVISIBLE);
+                    pairButton.setText("Generate QR code");
+                    QRVisible = 0;
+                } else if (QRVisible == 0) {
+                    generateQR();
+                    QRCode.setVisibility(View.VISIBLE);
+                    pairButton.setText("Close QR code");
+                    QRVisible = 1;
 
+                }
             }
-        }
-        });;
-
-
+        });
     }
 
     // decides what the back button does
@@ -280,3 +282,4 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         }
 
 }
+
