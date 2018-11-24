@@ -1,7 +1,9 @@
 package com.example.carli.mychildtrackerdisplay;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -45,7 +47,7 @@ import androidmads.library.qrgenearator.QRGSaver;
 
 public class DisplayActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private static final String TAG = DisplayActivity.class.getSimpleName();
+    private static final String TAG = "logged";
     private HashMap<String, Marker> mMarkers = new HashMap<>();
     private GoogleMap mMap;
     FirebaseUser user;
@@ -58,10 +60,16 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
     AlertDialog.Builder builder;
     Location location;
 
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
+
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
 
         // initialize buttons and adapter
         initializeButtons();
@@ -121,7 +129,10 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
                 QRGContents.Type.TEXT,
                 (int) 400d);
 
-        database.child("QRKey").setValue(randomString);
+        //database.child("QRKey").setValue(randomString);
+        editor.putString("QR Code", randomString);
+        Log.d(TAG, randomString);
+        editor.commit();
 
         try {
             // Getting QR-Code as Bitmap
@@ -173,12 +184,14 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
                 // check value in database snapshot
-                Log.d(TAG, "datasnapshot " + dataSnapshot.getValue());
+                Log.d(TAG, "datasnapshot " + dataSnapshot.toString());
                 setMarker(dataSnapshot);
+
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+
                 setMarker(dataSnapshot);
             }
 
@@ -203,54 +216,60 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         // its value in mMarkers, which contains all the markers
         // for locations received, so that we can build the
         // boundaries required to show them all at once
-        String key = dataSnapshot.getKey();
-        HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
-        double lat = Double.parseDouble(value.get("latitude").toString());
-        double lng = Double.parseDouble(value.get("longitude").toString());
-        LatLng latLong = new LatLng(lat, lng);
 
-        // create a location object with the current location's values
-        Location currentLocation = newLocation(value);
-        locations.add(currentLocation);
-        locationAdapter.notifyDataSetChanged();
+        if (dataSnapshot.getValue() != null) {
+            String key = dataSnapshot.getKey();
+            HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
 
-        // set the markers
-        if (!mMarkers.containsKey(key)) {
-            mMarkers.put(key, mMap.addMarker(new MarkerOptions().title(key).position(latLong)));
-        } else {
-            mMarkers.get(key).setPosition(latLong);
+            double lat = Double.parseDouble(value.get("latitude").toString());
+            double lng = Double.parseDouble(value.get("longitude").toString());
+            LatLng latLong = new LatLng(lat, lng);
+
+
+            // create a location object with the current location's values
+            Location currentLocation = newLocation(value);
+            locations.add(currentLocation);
+            locationAdapter.notifyDataSetChanged();
+
+            // set the markers
+            if (!mMarkers.containsKey(key)) {
+                mMarkers.put(key, mMap.addMarker(new MarkerOptions().title(key).position(latLong)));
+            } else {
+                mMarkers.get(key).setPosition(latLong);
+            }
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            for (Marker marker : mMarkers.values()) {
+                builder.include(marker.getPosition());
+            }
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 300));
         }
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (Marker marker : mMarkers.values()) {
-            builder.include(marker.getPosition());
-        }
-        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 300));
     }
 
-    // extract the current location from the hashmap
-    public Location newLocation(HashMap<String, Object> hashMap){
-        location = new Location();
-        location.longitude = hashMap.get("longitude").toString();
-        location.latitude = hashMap.get("latitude").toString();
-        long timeStamp = Long.parseLong(hashMap.get("time").toString());
-        location.id_timestamp = getFormatTime(timeStamp);
+        // extract the current location from the hashmap
+        public Location newLocation (HashMap < String, Object > hashMap){
+            location = new Location();
+            location.longitude = hashMap.get("longitude").toString();
+            location.latitude = hashMap.get("latitude").toString();
+            long timeStamp = Long.parseLong(hashMap.get("time").toString());
+            location.id_timestamp = getFormatTime(timeStamp);
 
-        return location;
-    }
-
-    // generate a random string
-    public static String random() {
-        int MAX_LENGTH = 10;
-        Random generator = new Random();
-        StringBuilder randomStringBuilder = new StringBuilder();
-        int randomLength = generator.nextInt(MAX_LENGTH);
-        char tempChar;
-        for (int i = 0; i < randomLength; i++){
-            tempChar = (char) (generator.nextInt(96) + 32);
-            randomStringBuilder.append(tempChar);
+            return location;
         }
-        return randomStringBuilder.toString();
-    }
+
+        // generate a random string
+        public static String random () {
+            int MAX_LENGTH = 10;
+            Random generator = new Random();
+            StringBuilder randomStringBuilder = new StringBuilder();
+            int randomLength = generator.nextInt(MAX_LENGTH);
+            char tempChar;
+            for (int i = 0; i < randomLength; i++) {
+                tempChar = (char) (generator.nextInt(96) + 32);
+                randomStringBuilder.append(tempChar);
+            }
+            return randomStringBuilder.toString();
+        }
+
 
 
 }

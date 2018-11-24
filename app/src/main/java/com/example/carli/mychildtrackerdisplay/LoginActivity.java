@@ -19,7 +19,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 /**
  * Source: https://github.com/firebase/quickstart-android/tree/master/auth/app/src/main
  * Controls the log in activity so multiple users can use the app
- * Edited by Carlijn Quik in december 2016
  */
 
 public class LoginActivity extends LoginProgressDialog implements View.OnClickListener{
