@@ -77,7 +77,7 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
 
         // initialize Firebase
         user =  FirebaseAuth.getInstance().getCurrentUser();
-        database = FirebaseDatabase.getInstance().getReference(user.getUid()).child("locations");
+        database = FirebaseDatabase.getInstance().getReference(user.getUid());
 
         // initialize the map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -173,14 +173,16 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         // Authenticate with Firebase when the Google map is loaded
         mMap = googleMap;
         mMap.setMaxZoomPreference(10);
-        subscribeToUpdates();
+        if(!database.child("locations").equals(null) ){
+            subscribeToUpdates();
+        }
 
     }
 
     // makes sure the location is updates
     private void subscribeToUpdates() {
 
-        database.addChildEventListener(new ChildEventListener() {
+        database.child("locations").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
                 // check value in database snapshot
