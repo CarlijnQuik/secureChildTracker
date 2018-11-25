@@ -105,6 +105,7 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
 
     }
 
+    // decide what clicking a button does
     @Override
     public void onClick(View v) {
         int i = v.getId();
