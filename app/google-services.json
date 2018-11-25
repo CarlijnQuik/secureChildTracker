@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "957366363443-cn5655d4lg9vf1htn5lcjurp5hjva5aq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.carli.mychildtracker",
+            "certificate_hash": "8a6c044337467d1143dc52f4b5e3653f1803a7ff"
+          }
+        },
+        {
           "client_id": "957366363443-jcliq1q2nbr259f28fu32981tk14sbt5.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -64,6 +72,22 @@
           "android_info": {
             "package_name": "com.example.carli.mychildtrackerdisplay",
             "certificate_hash": "d080be29717efe2d8cdefe48a0455c4863353d42"
+          }
+        },
+        {
+          "client_id": "957366363443-6eu82uhc60oq7860inr7ev07n153dsup.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.carli.mychildtrackerdisplay",
+            "certificate_hash": "d45cb203fc03c574c3a2212f1cd73cf246615c1f"
+          }
+        },
+        {
+          "client_id": "957366363443-epo3cl1589icrlpco5gccf9h4o0gklhd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.carli.mychildtrackerdisplay",
+            "certificate_hash": "8a6c044337467d1143dc52f4b5e3653f1803a7ff"
           }
         },
         {
