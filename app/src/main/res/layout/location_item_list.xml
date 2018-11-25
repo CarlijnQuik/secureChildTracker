@@ -8,7 +8,7 @@
         android:layout_width="75dp"
         android:layout_height="50dp"
         android:contentDescription="@string/contentdescription"
-        app:srcCompat="@mipmap/location"
+        app:srcCompat="@drawable/location"
         android:id="@+id/ivImage"
         android:layout_alignTop="@+id/tvTimestamp"
         android:layout_alignParentStart="true"
