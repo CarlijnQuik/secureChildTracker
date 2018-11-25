@@ -217,6 +217,9 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
                         database = FirebaseDatabase.getInstance().getReference(user.getUid());
                         database.child("userType").setValue(userType);
 
+                        editor.putString("userType", userType);
+                        editor.commit();
+
                         forwardParent();
 
                         break;
@@ -227,6 +230,9 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
 
                         database = FirebaseDatabase.getInstance().getReference(user.getUid());
                         database.child("userType").setValue(userType);
+
+                        editor.putString("userType", userType);
+                        editor.commit();
 
                         forwardChild();
 
@@ -242,12 +248,12 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
     }
 
     public void forwardUser(){
-
-        checkUserType();
+        userType = sharedPref.getString("userType", "DEFAULT");
+        checkUser(userType);
 
     }
 
-    public void checkUserType(String userType){
+    public void checkUser(String userType){
         if (userType.equals("parent")){
             forwardParent();
         }
