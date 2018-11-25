@@ -1,4 +1,4 @@
-package com.example.carli.mychildtrackerdisplay;
+package com.example.carli.mychildtrackerdisplay.Model;
 
 import com.google.firebase.database.DataSnapshot;
 
