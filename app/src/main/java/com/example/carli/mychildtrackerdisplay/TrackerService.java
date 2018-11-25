@@ -1,6 +1,5 @@
 package com.example.carli.mychildtrackerdisplay;
 
-import com.example.carli.mychildtrackerdisplay.LoginActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -40,6 +39,7 @@ public class TrackerService extends Service {
         super.onCreate();
         requestLocationUpdates();
         buildNotification();
+
     }
 
     private void buildNotification() {
@@ -56,6 +56,7 @@ public class TrackerService extends Service {
                 .setContentIntent(broadcastIntent)
                 .setSmallIcon(R.drawable.ic_tracker);
         startForeground(1, builder.build());
+
     }
 
     protected BroadcastReceiver stopReceiver = new BroadcastReceiver() {
@@ -116,5 +117,4 @@ public class TrackerService extends Service {
 
 
 }
-
 

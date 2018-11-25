@@ -54,7 +54,6 @@ public class TrackerActivity extends Activity implements ZXingScannerView.Result
                 Manifest.permission.ACCESS_FINE_LOCATION);
         if (permission == PackageManager.PERMISSION_GRANTED) {
             startTrackerService();
-
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -63,12 +62,10 @@ public class TrackerActivity extends Activity implements ZXingScannerView.Result
 
         int permissionCamera = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA);
-
         if (permissionCamera == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA},
                     PERMISSIONS_REQUEST);
-
         }
     }
 
@@ -99,13 +96,13 @@ public class TrackerActivity extends Activity implements ZXingScannerView.Result
     public void onBackPressed() {
         moveTaskToBack(true);
 
+
     }
 
     private void startTrackerService() {
         startService(new Intent(this, TrackerService.class));
         Toast.makeText(this, "Tracker service started", Toast.LENGTH_SHORT).show();
         //finish();
-
     }
 
     @Override
@@ -117,11 +114,9 @@ public class TrackerActivity extends Activity implements ZXingScannerView.Result
             // Start the service when the permission is granted
             startTrackerService();
             //Log.d(TAG, "Tracking started...");
-
         } else {
             Toast.makeText(this, "No permission to start service", Toast.LENGTH_SHORT).show();
             finish();
-
         }
     }
 
@@ -135,4 +130,3 @@ public class TrackerActivity extends Activity implements ZXingScannerView.Result
 
     }
 }
-

@@ -1,8 +1,10 @@
 package com.example.carli.mychildtrackerdisplay;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -39,6 +41,9 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
     private DatabaseReference database;
     private FirebaseUser user;
 
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
+
     String userType;
 
     @Override
@@ -53,6 +58,9 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
 
         findViewById(R.id.bLogIn).setOnClickListener(this);
         findViewById(R.id.bCreateAccount).setOnClickListener(this);
+
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
 
     }
 
@@ -234,36 +242,18 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
     }
 
     public void forwardUser(){
-        database = FirebaseDatabase.getInstance().getReference(user.getUid());
 
-        database.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                userType = dataSnapshot.child("userType").toString();
-                Log.d("snapshot", userType);
+        checkUserType();
 
-            }
+    }
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+    public void checkUserType(String userType){
+        if (userType.equals("parent")){
+            forwardParent();
+        }
+        if (userType.equals("child")){
+            forwardChild();
+        }
 
     }
 
