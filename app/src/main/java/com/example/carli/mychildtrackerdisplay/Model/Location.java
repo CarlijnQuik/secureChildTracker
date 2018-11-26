@@ -14,18 +14,18 @@ import java.io.Serializable;
 
 public class Location implements Serializable {
 
-    public long id_timestamp = 0;
-    public double latitude = 0;
-    public double longitude = 0;
+    public long timestamp = 0;
+    public double latitude = Double.MIN_VALUE;
+    public double longitude = Double.MIN_VALUE;
     public float accuracy = 0;
 
 
     public long getId_timestamp() {
-        return id_timestamp;
+        return timestamp;
     }
 
     public void setId_timestamp(long id_timestamp) {
-        this.id_timestamp = id_timestamp;
+        this.timestamp = id_timestamp;
     }
 
     public double getLatitude() {
@@ -53,12 +53,13 @@ public class Location implements Serializable {
     }
 
     public Location(long id_timestamp, double latitude, double longitude, float accuracy) {
-        this.id_timestamp = id_timestamp;
+        this.timestamp = id_timestamp;
         this.latitude = latitude;
         this.longitude = longitude;
         this.accuracy = accuracy;
     }
 
+    public Location(){}
 
 
 }

@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.carli.mychildtrackerdisplay.Model.Location;
+import com.example.carli.mychildtrackerdisplay.Model.UserEntry;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -81,6 +82,8 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         // define views
         QRCode = (ImageView) findViewById(R.id.qrDisplay);
         pairButton = (Button) findViewById(R.id.pairPhone);
+
+
 
 
         // initialize the map
@@ -266,10 +269,9 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         // extract the current location from the hashmap
         public Location newLocation (HashMap < String, Object > hashMap){
             location = new Location();
-            location.longitude = hashMap.get("longitude").toString();
-            location.latitude = hashMap.get("latitude").toString();
-            long timeStamp = Long.parseLong(hashMap.get("time").toString());
-            location.id_timestamp = getFormatTime(timeStamp);
+            location.longitude = Double.parseDouble(hashMap.get("longitude").toString());
+            location.latitude = Double.parseDouble(hashMap.get("latitude").toString());
+            location.timestamp = Long.parseLong(hashMap.get("time").toString());
 
             return location;
         }

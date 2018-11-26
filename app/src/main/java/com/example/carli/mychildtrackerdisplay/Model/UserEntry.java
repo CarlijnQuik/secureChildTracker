@@ -9,6 +9,10 @@ public class UserEntry {
     private Integer interval;
     private String security_check;
 
+    public UserEntry() {
+
+    }
+
     public String getUsertype() {
         return usertype;
     }

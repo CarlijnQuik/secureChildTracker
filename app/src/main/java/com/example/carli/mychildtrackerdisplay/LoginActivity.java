@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.carli.mychildtrackerdisplay.Model.UserEntry;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -73,6 +74,8 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
 
                 if (user != null) {
                     // user is logged in
+                    database = FirebaseDatabase.getInstance().getReference(user.getUid());
+
                     forwardUser();
                     Toast.makeText(LoginActivity.this, "Logged in", LENGTH_SHORT).show();
 
@@ -265,6 +268,13 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
     }
 
     public void forwardParent(){
+        UserEntry ue = new UserEntry();
+        ue.setInterval(5);
+        ue.setSecurity_check("blabla");
+        database.setValue(ue);
+
+        FirebaseRepository firebaseRepository = new FirebaseRepository();
+        UserEntry userEntry = firebaseRepository.getUserEntry();
         Intent intent = new Intent(this, DisplayActivity.class);
         startActivity(intent);
 

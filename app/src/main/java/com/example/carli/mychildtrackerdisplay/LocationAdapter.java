@@ -53,14 +53,14 @@ public class LocationAdapter  extends BaseAdapter {
             TextView tvLongitude = (TextView) convertView.findViewById(R.id.tvLongitude);
 
             // set textview to show achievement name
-            if (location.getId_timestamp() != null) {
-                tvTimestamp.setText(location.getId_timestamp());
+            if (location.getId_timestamp() != Double.MIN_VALUE) {
+                tvTimestamp.setText(""+location.getId_timestamp());
             }
-            if (location.getLatitude() != null) {
-                tvLatitude.setText(location.getLatitude());
+            if (location.getLatitude() != Double.MIN_VALUE) {
+                tvLatitude.setText(""+location.getLatitude());
             }
-            if (location.getLongitude() != null) {
-                tvLongitude.setText(location.getLongitude());
+            if (location.getLongitude() != Double.MIN_VALUE) {
+                tvLongitude.setText(""+location.getLongitude());
             }
 
 
