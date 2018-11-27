@@ -69,7 +69,7 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
         childGenerateQR = (Button) findViewById(R.id.childGenerateQR);
         childScanQR = (Button) findViewById(R.id.childScanQR);
 
-        initializeButtons();
+        //initializeButtons();
 
         int permissionCamera = ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.CAMERA);
@@ -100,6 +100,8 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
         }
 
     }
+
+
 
     public void initializeButtons(){
 
