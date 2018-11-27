@@ -91,6 +91,7 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
 //                    QRVisible = 1;
 //
 //                }
+                Log.d("clicked", "childGenerateQR clicked");
                 generateQR();
             }
         });
@@ -109,6 +110,7 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
 //                    QRVisible = 1;
 //
 //                }
+                Log.d("clicked", "parentGenerateQR clicked");
                 generateQR();
             }
         });
@@ -116,6 +118,7 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
         childScanQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("clicked", "childScanQR clicked");
                 scanQR();
             }
         });
@@ -123,6 +126,7 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
         parentScanQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("clicked", "parentScanQR clicked");
                 scanQR();
             }
         });
@@ -172,7 +176,8 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
     public void handleResult(com.google.zxing.Result result) {
         Toast.makeText(getApplicationContext(),result.getText(),Toast.LENGTH_SHORT).show();
         zXingScannerView.resumeCameraPreview(this);
-        zXingScannerView.removeAllViews(); //<- here remove all the views, it will make an Activity having no View
+        //zXingScannerView.removeAllViews(); //<- here remove all the views, it will make an Activity having no View
+        zXingScannerView.stopCameraPreview();
         zXingScannerView.stopCamera(); //<- then stop the camera
         setContentView(R.layout.activity_pairing); //<- and set the View again.
         QRCode = result.toString();
