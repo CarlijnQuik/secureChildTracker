@@ -153,6 +153,7 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
                     Log.d("clicked", "parentGenerateQR clicked");
                     byte[] bytes = key.getEncoded();
                     String output = Base64.encodeToString(bytes, Base64.DEFAULT);
+                    output.replaceAll("\n", "");
                     output += "////";
                     output += nonce.toString();
                     output += "////";
