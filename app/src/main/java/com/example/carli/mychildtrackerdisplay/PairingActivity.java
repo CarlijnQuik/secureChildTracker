@@ -1,6 +1,7 @@
 package com.example.carli.mychildtrackerdisplay;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.support.v4.app.ActivityCompat;
@@ -63,7 +64,7 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
     @Override
     public void onStart() {
         super.onStart();
-
+        initializeButtons();
     }
 
     @Override
@@ -92,7 +93,8 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
 //
 //                }
                 Log.d("clicked", "childGenerateQR clicked");
-                generateQR();
+
+                generateQR("test");
             }
         });
 
@@ -111,7 +113,7 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
 //
 //                }
                 Log.d("clicked", "parentGenerateQR clicked");
-                generateQR();
+                generateQR("bla");
             }
         });
 
@@ -145,10 +147,9 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
 
 
     // generates a QR code and displays it on the screen
-    private void generateQR(){
-        String randomString = "Hola!";
+    private void generateQR(String string){
 
-        QRGEncoder qrgEncoder = new QRGEncoder(randomString,
+        QRGEncoder qrgEncoder = new QRGEncoder(string,
                 null,
                 QRGContents.Type.TEXT,
                 (int) 400d);
@@ -179,10 +180,10 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
         //zXingScannerView.removeAllViews(); //<- here remove all the views, it will make an Activity having no View
         zXingScannerView.stopCameraPreview();
         zXingScannerView.stopCamera(); //<- then stop the camera
-        setContentView(R.layout.activity_pairing); //<- and set the View again.
+
         QRCode = result.toString();
         Log.d("Scanning result:", QRCode);
-
+        startActivity(new Intent(this,PairingActivity.class));
     }
 
 }
