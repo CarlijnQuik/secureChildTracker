@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -16,9 +18,19 @@ import android.widget.Toast;
 
 import com.google.zxing.WriterException;
 
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.util.Random;
+
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
+
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
+
 
 public class PairingActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
@@ -31,6 +43,13 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
     String QRCode;
     private ZXingScannerView zXingScannerView;
     private static final int PERMISSIONS_REQUEST = 1;
+    private static final String AndroidKeyStore = "AndroidKeyStore";
+    private static final String AES_MODE = "AES/GCM/NoPadding";
+    private static final String KEY_ALIAS = "parentchildkey";
+    private SecretKey key;
+    private Integer nonce = 0;
+    private String userType;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +100,7 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
         // decide what clicking the generate QR code button does
         childGenerateQR.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                userType = "child";
 //                if (QRVisible == 1) {
 //                    displayQR.setVisibility(View.INVISIBLE);
 //                    childGenerateQR.setText("Generate QR code");
@@ -94,13 +114,14 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
 //                }
                 Log.d("clicked", "childGenerateQR clicked");
 
-                generateQR("test");
+                generateQR("THIS IS ID OF THE CHILD");
             }
         });
 
         // decide what clicking the generate QR code button does
         parentGenerateQR.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                userType = "parent";
 //                if (QRVisible == 1) {
 //                    displayQR.setVisibility(View.INVISIBLE);
 //                    parentGenerateQR.setText("Generate QR code");
@@ -112,30 +133,49 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
 //                    QRVisible = 1;
 //
 //                }
-                Log.d("clicked", "parentGenerateQR clicked");
-                generateQR("bla");
+
+                try {
+                    KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES);
+                    keyGenerator.init(128);
+                    key = keyGenerator.generateKey();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+                Random random = new Random();
+                nonce = random.nextInt();
+
+                    Log.d("clicked", "parentGenerateQR clicked");
+                    byte[] bytes = key.getEncoded();
+                    String output = new String(bytes);
+                    output += "////";
+                    output += nonce.toString();
+                    Log.d("PARENTCHILDkey", output);
+                    generateQR(output);
+
             }
         });
 
         childScanQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                userType = "child";
                 Log.d("clicked", "childScanQR clicked");
-                scanQR();
+                scanQR(false);
             }
         });
 
         parentScanQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                userType = "parent";
                 Log.d("clicked", "parentScanQR clicked");///
-                scanQR();
+                scanQR(true);
             }
         });
 
     }
 
-    public void scanQR(){
+    public void scanQR(boolean parent){
         // Code here executes on main thread after user presses button
         zXingScannerView = new ZXingScannerView(getApplicationContext());
         setContentView(zXingScannerView);
@@ -182,8 +222,24 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
         zXingScannerView.stopCamera(); //<- then stop the camera
 
         QRCode = result.toString();
+        if (userType.equals("child"))
+            processQRchild(QRCode);
+        else
+            processQRparent(QRCode);
+
         Log.d("Scanning result:", QRCode);
         startActivity(new Intent(this,PairingActivity.class));
+    }
+
+    private void processQRchild(String qrCode) {
+        String[]data = qrCode.split("////");
+        nonce = Integer.decode(data[1]);
+        key = new SecretKeySpec(data[0].getBytes(), 0, data[0].length(), KeyProperties.KEY_ALGORITHM_AES);
+
+    }
+
+    private void processQRparent(String qrCode){
+
     }
 
 }
