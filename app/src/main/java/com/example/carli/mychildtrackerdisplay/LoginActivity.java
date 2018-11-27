@@ -252,7 +252,7 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
     }
 
     public void forwardUser(){
-        getValueFromDatabase();
+        //getValueFromDatabase();
         userType = sharedPref.getString("userType", "DEFAULT");
         checkUser(userType);
 
@@ -269,13 +269,13 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
     }
 
     public void forwardParent(){
-        UserEntry ue = new UserEntry();
-        ue.setInterval(5);
-        ue.setSecurity_check("blabla");
-        database.setValue(ue);
+        //UserEntry ue = new UserEntry();
+        //ue.setInterval(5);
+        //ue.setSecurity_check("blabla");
+        //database.setValue(ue);
 
-        FirebaseRepository firebaseRepository = new FirebaseRepository();
-        UserEntry userEntry = firebaseRepository.getUserEntry();
+        //FirebaseRepository firebaseRepository = new FirebaseRepository();
+        //UserEntry userEntry = firebaseRepository.getUserEntry();
         Intent intent = new Intent(this, DisplayActivity.class);
         startActivity(intent);
 
