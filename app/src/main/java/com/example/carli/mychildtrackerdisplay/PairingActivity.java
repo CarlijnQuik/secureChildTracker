@@ -90,9 +90,16 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
             }
         });
 
+        scanQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scanQR();
+            }
+        });
+
     }
 
-    public void scanQR(View view){
+    public void scanQR(){
         // Code here executes on main thread after user presses button
         zXingScannerView = new ZXingScannerView(getApplicationContext());
         setContentView(zXingScannerView);
