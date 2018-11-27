@@ -1,7 +1,6 @@
 package com.example.carli.mychildtrackerdisplay;
 
 import com.example.carli.mychildtrackerdisplay.Model.UserEntry;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
