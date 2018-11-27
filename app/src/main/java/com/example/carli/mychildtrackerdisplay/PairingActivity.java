@@ -80,34 +80,36 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
         // decide what clicking the generate QR code button does
         childGenerateQR.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (QRVisible == 1) {
-                    displayQR.setVisibility(View.INVISIBLE);
-                    childGenerateQR.setText("Generate QR code");
-                    QRVisible = 0;
-                } else if (QRVisible == 0) {
-                    generateQR();
-                    displayQR.setVisibility(View.VISIBLE);
-                    childGenerateQR.setText("Close QR code");
-                    QRVisible = 1;
-
-                }
+//                if (QRVisible == 1) {
+//                    displayQR.setVisibility(View.INVISIBLE);
+//                    childGenerateQR.setText("Generate QR code");
+//                    QRVisible = 0;
+//                } else if (QRVisible == 0) {
+//                    generateQR();
+//                    displayQR.setVisibility(View.VISIBLE);
+//                    childGenerateQR.setText("Close QR code");
+//                    QRVisible = 1;
+//
+//                }
+                generateQR();
             }
         });
 
         // decide what clicking the generate QR code button does
         parentGenerateQR.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (QRVisible == 1) {
-                    displayQR.setVisibility(View.INVISIBLE);
-                    parentGenerateQR.setText("Generate QR code");
-                    QRVisible = 0;
-                } else if (QRVisible == 0) {
-                    generateQR();
-                    displayQR.setVisibility(View.VISIBLE);
-                    parentGenerateQR.setText("Close QR code");
-                    QRVisible = 1;
-
-                }
+//                if (QRVisible == 1) {
+//                    displayQR.setVisibility(View.INVISIBLE);
+//                    parentGenerateQR.setText("Generate QR code");
+//                    QRVisible = 0;
+//                } else if (QRVisible == 0) {
+//                    generateQR();
+//                    displayQR.setVisibility(View.VISIBLE);
+//                    parentGenerateQR.setText("Close QR code");
+//                    QRVisible = 1;
+//
+//                }
+                generateQR();
             }
         });
 
