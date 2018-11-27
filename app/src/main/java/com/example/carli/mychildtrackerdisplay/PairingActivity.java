@@ -126,7 +126,7 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
         parentScanQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("clicked", "parentScanQR clicked");
+                Log.d("clicked", "parentScanQR clicked");///
                 scanQR();
             }
         });
