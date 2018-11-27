@@ -22,8 +22,10 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 public class PairingActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
     ImageView displayQR;
-    Button generateQR;
-    Button scanQR;
+    Button parentGenerateQR;
+    Button parentScanQR;
+    Button childGenerateQR;
+    Button childScanQR;
     int QRVisible = 0;
     String QRCode;
     private ZXingScannerView zXingScannerView;
@@ -36,8 +38,10 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
 
         // define views
         displayQR = (ImageView) findViewById(R.id.displayQR);
-        generateQR = (Button) findViewById(R.id.generateQR);
-        scanQR = (Button) findViewById(R.id.scanQR);
+        parentGenerateQR = (Button) findViewById(R.id.parentGenerateQR);
+        parentScanQR = (Button) findViewById(R.id.parentScanQR);
+        childGenerateQR = (Button) findViewById(R.id.childGenerateQR);
+        childScanQR = (Button) findViewById(R.id.childScanQR);
 
         initializeButtons();
 
@@ -74,19 +78,52 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
     public void initializeButtons(){
 
         // decide what clicking the generate QR code button does
-        generateQR.setOnClickListener(new View.OnClickListener() {
+        childGenerateQR.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (QRVisible == 1) {
-                    displayQR.setVisibility(View.INVISIBLE);
-                    generateQR.setText("Generate QR code");
-                    QRVisible = 0;
-                } else if (QRVisible == 0) {
-                    generateQR();
-                    displayQR.setVisibility(View.VISIBLE);
-                    generateQR.setText("Close QR code");
-                    QRVisible = 1;
+//                if (QRVisible == 1) {
+//                    displayQR.setVisibility(View.INVISIBLE);
+//                    childGenerateQR.setText("Generate QR code");
+//                    QRVisible = 0;
+//                } else if (QRVisible == 0) {
+//                    generateQR();
+//                    displayQR.setVisibility(View.VISIBLE);
+//                    childGenerateQR.setText("Close QR code");
+//                    QRVisible = 1;
+//
+//                }
+                generateQR();
+            }
+        });
 
-                }
+        // decide what clicking the generate QR code button does
+        parentGenerateQR.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+//                if (QRVisible == 1) {
+//                    displayQR.setVisibility(View.INVISIBLE);
+//                    parentGenerateQR.setText("Generate QR code");
+//                    QRVisible = 0;
+//                } else if (QRVisible == 0) {
+//                    generateQR();
+//                    displayQR.setVisibility(View.VISIBLE);
+//                    parentGenerateQR.setText("Close QR code");
+//                    QRVisible = 1;
+//
+//                }
+                generateQR();
+            }
+        });
+
+        childScanQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scanQR();
+            }
+        });
+
+        parentScanQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scanQR();
             }
         });
 
@@ -142,7 +179,9 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
     public void handleResult(com.google.zxing.Result result) {
         Toast.makeText(getApplicationContext(),result.getText(),Toast.LENGTH_SHORT).show();
         zXingScannerView.resumeCameraPreview(this);
-
+        zXingScannerView.removeAllViews(); //<- here remove all the views, it will make an Activity having no View
+        zXingScannerView.stopCamera(); //<- then stop the camera
+        setContentView(R.layout.activity_pairing); //<- and set the View again.
         QRCode = result.toString();
         Log.d("Scanning result:", QRCode);
 
