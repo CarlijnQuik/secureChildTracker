@@ -153,7 +153,7 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
                     Log.d("clicked", "parentGenerateQR clicked");
                     byte[] bytes = key.getEncoded();
                     String output = Base64.encodeToString(bytes, Base64.DEFAULT);
-                    output.replaceAll("\n", "");
+                    output = output.replaceAll("\n", "");
                     output += "////";
                     output += nonce.toString();
                     output += "////";
@@ -243,7 +243,8 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
     private void processQRchild(String qrCode) {
         String[]data = qrCode.split("////");
         nonce = Integer.decode(data[1]);
-        key = new SecretKeySpec(Base64.decode(data[0], Base64.DEFAULT), 0, data[0].length(), KeyProperties.KEY_ALGORITHM_AES);
+        byte[] bytes = Base64.decode(data[0], Base64.DEFAULT);
+        key = new SecretKeySpec(bytes, 0, bytes.length, KeyProperties.KEY_ALGORITHM_AES);
         database.child("partnerID").setValue(data[2]);
 
         Cipher cipher = null;
