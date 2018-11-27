@@ -26,10 +26,10 @@ public class LocationAdapter  extends BaseAdapter {
     Context context;
     ArrayList<Location> locations;
 
-    public LocationAdapter(Activity activity, ArrayList<Location> books) {
+    public LocationAdapter(Activity activity, ArrayList<Location> locations) {
         this.activity = activity;
         this.context = activity.getApplicationContext();
-        this.locations = books;
+        this.locations = locations;
 
     }
 

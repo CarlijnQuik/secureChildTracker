@@ -107,12 +107,12 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
     public void initializeButtons(){
         // decide what clicking the logout button does
         logOutButton.setOnClickListener(new View.OnClickListener() {
-          public void onClick(View v) {
-              // Code here executes on main thread after user presses button
-              FirebaseAuth.getInstance().signOut();
-              signOut();
-              Toast.makeText(DisplayActivity.this, "Signed out", LENGTH_SHORT).show();
-          }
+            public void onClick(View v) {
+                // Code here executes on main thread after user presses button
+                FirebaseAuth.getInstance().signOut();
+                signOut();
+                Toast.makeText(DisplayActivity.this, "Signed out", LENGTH_SHORT).show();
+            }
         });
 
         pairButton.setOnClickListener(new View.OnClickListener() {
@@ -228,15 +228,14 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         }
     }
 
-        // extract the current location from the hashmap
-        public Location newLocation (HashMap < String, Object > hashMap){
-            location = new Location();
-            location.longitude = Double.parseDouble(hashMap.get("longitude").toString());
-            location.latitude = Double.parseDouble(hashMap.get("latitude").toString());
-            location.timestamp = Long.parseLong(hashMap.get("time").toString());
+    // extract the current location from the hashmap
+    public Location newLocation (HashMap < String, Object > hashMap){
+        location = new Location();
+        location.longitude = Double.parseDouble(hashMap.get("longitude").toString());
+        location.latitude = Double.parseDouble(hashMap.get("latitude").toString());
+        location.timestamp = Long.parseLong(hashMap.get("time").toString());
 
-            return location;
-        }
+        return location;
+    }
 
 }
-
