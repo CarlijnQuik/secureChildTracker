@@ -10,8 +10,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
 
     <application
@@ -48,14 +49,14 @@
         </activity>
         <activity android:name=".LoginProgressDialog" />
         <activity android:name=".DisplayActivity" />
-        <activity android:name=".TrackerActivity"></activity>
+        <activity android:name=".TrackerActivity" />
 
-    <service
-        android:name=".TrackerService"
-        android:enabled="true"
-        android:exported="true">
-    </service>
+        <service
+            android:name=".TrackerService"
+            android:enabled="true"
+            android:exported="true"></service>
 
-</application>
+        <activity android:name=".PairingActivity"></activity>
+    </application>
 
 </manifest>

@@ -252,6 +252,7 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
     }
 
     public void forwardUser(){
+        getValueFromDatabase();
         userType = sharedPref.getString("userType", "DEFAULT");
         checkUser(userType);
 
