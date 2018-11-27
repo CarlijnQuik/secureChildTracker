@@ -27,10 +27,8 @@ public class TrackerActivity extends Activity implements ZXingScannerView.Result
 
     private static final int PERMISSIONS_REQUEST = 1;
     private static final String TAG = TrackerService.class.getSimpleName();
-    private ZXingScannerView zXingScannerView;
     FirebaseUser user;
     DatabaseReference database;
-    String QRCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,21 +67,9 @@ public class TrackerActivity extends Activity implements ZXingScannerView.Result
         }
     }
 
-    public void scanQR(View view){
-        // Code here executes on main thread after user presses button
-        zXingScannerView = new ZXingScannerView(getApplicationContext());
-        setContentView(zXingScannerView);
-        zXingScannerView.setResultHandler(this);
-        zXingScannerView.startCamera();
-
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
-        if(zXingScannerView != null) {
-            zXingScannerView.stopCamera();
-        }
 
     }
 
@@ -120,13 +106,5 @@ public class TrackerActivity extends Activity implements ZXingScannerView.Result
         }
     }
 
-    @Override
-    public void handleResult(com.google.zxing.Result result) {
-        Toast.makeText(getApplicationContext(),result.getText(),Toast.LENGTH_SHORT).show();
-        zXingScannerView.resumeCameraPreview(this);
 
-        QRCode = result.toString();
-        Log.d("Scanning result:", QRCode);
-
-    }
 }

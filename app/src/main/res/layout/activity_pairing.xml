@@ -7,7 +7,7 @@
     tools:context=".PairingActivity">
 
     <ImageView
-        android:id="@+id/qrDisplay"
+        android:id="@+id/displayQR"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:contentDescription="Display"
@@ -15,7 +15,7 @@
         android:layout_alignParentTop="true" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/generateQR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Generate QR"
@@ -23,7 +23,7 @@
         tools:layout_editor_absoluteY="390dp" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/scanQR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Scan QR"

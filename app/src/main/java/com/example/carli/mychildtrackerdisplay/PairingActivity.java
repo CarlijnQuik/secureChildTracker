@@ -7,16 +7,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.zxing.WriterException;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class PairingActivity extends AppCompatActivity {
 
-    ImageView QRCode;
-    Button pairButton;
+    ImageView displayQR;
+    Button generateQR;
+    Button scanQR;
+    int QRVisible = 0;
+    String QRCode;
+    private ZXingScannerView zXingScannerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,9 +30,65 @@ public class PairingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pairing);
 
         // define views
-        QRCode = (ImageView) findViewById(R.id.qrDisplay);
-        pairButton = (Button) findViewById(R.id.pairPhone);
+        displayQR = (ImageView) findViewById(R.id.displayQR);
+        generateQR = (Button) findViewById(R.id.generateQR);
+        scanQR = (Button) findViewById(R.id.scanQR);
+
+        initializeButtons();
     }
+
+    public void onBackPressed() {
+        moveTaskToBack(true);
+
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(zXingScannerView != null) {
+            zXingScannerView.stopCamera();
+        }
+
+    }
+
+    public void initializeButtons(){
+
+        // decide what clicking the generate QR code button does
+        generateQR.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (QRVisible == 1) {
+                    displayQR.setVisibility(View.INVISIBLE);
+                    generateQR.setText("Generate QR code");
+                    QRVisible = 0;
+                } else if (QRVisible == 0) {
+                    generateQR();
+                    displayQR.setVisibility(View.VISIBLE);
+                    generateQR.setText("Close QR code");
+                    QRVisible = 1;
+
+                }
+            }
+        });
+
+    }
+
+    public void scanQR(View view){
+        // Code here executes on main thread after user presses button
+        zXingScannerView = new ZXingScannerView(getApplicationContext());
+        setContentView(zXingScannerView);
+        zXingScannerView.setResultHandler(this);
+        zXingScannerView.startCamera();
+
+    }
+
+
 
     // generates a QR code and displays it on the screen
     private void generateQR(){
@@ -43,7 +105,7 @@ public class PairingActivity extends AppCompatActivity {
 
             // Setting Bitmap to ImageView
 
-            QRCode.setImageBitmap(bitmap);
+            displayQR.setImageBitmap(bitmap);
             //QRCode.setVisibility(View.VISIBLE);
             //QRGSaver.save(savePath, edtValue.getText().toString().trim(), bitmap, QRGContents.ImageType.IMAGE_JPEG);
 
@@ -51,25 +113,19 @@ public class PairingActivity extends AppCompatActivity {
 
 
         } catch (WriterException e) {
-            Log.v(TAG, e.toString());
+            Log.v("TAG", e.toString());
         }
 
     }
 
-    // decide what clicking the generate QR code button does
-    findViewById(R.id.pairPhone).setOnClickListener(new View.OnClickListener() {
-        public void onClick(View v) {
-            if (QRVisible == 1) {
-                QRCode.setVisibility(View.INVISIBLE);
-                pairButton.setText("Generate QR code");
-                QRVisible = 0;
-            } else if (QRVisible == 0) {
-                generateQR();
-                QRCode.setVisibility(View.VISIBLE);
-                pairButton.setText("Close QR code");
-                QRVisible = 1;
+    @Override
+    public void handleResult(com.google.zxing.Result result) {
+        Toast.makeText(getApplicationContext(),result.getText(),Toast.LENGTH_SHORT).show();
+        zXingScannerView.resumeCameraPreview(this);
 
-            }
-        }
-    });
+        QRCode = result.toString();
+        Log.d("Scanning result:", QRCode);
+
+    }
+
 }

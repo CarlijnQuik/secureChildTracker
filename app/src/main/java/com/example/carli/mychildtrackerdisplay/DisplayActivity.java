@@ -49,7 +49,6 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
     private HashMap<String, Marker> mMarkers = new HashMap<>();
     private GoogleMap mMap;
     FirebaseUser user;
-    ImageView QRCode;
 
     DatabaseReference database;
     ListView listOfLocations;
@@ -58,10 +57,10 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
     AlertDialog.Builder builder;
     Location location;
     Button pairButton;
+    Button logOutButton;
 
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
-    int QRVisible = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,16 +78,22 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         user =  FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference(user.getUid());
 
-        // define views
-        QRCode = (ImageView) findViewById(R.id.qrDisplay);
+        // define view
         pairButton = (Button) findViewById(R.id.pairPhone);
+        logOutButton = (Button) findViewById(R.id.bLogOut);
 
         // initialize the map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        }
+    }
+
+    // decides what the back button does
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
 
 
     public void initializeAdapter(){
@@ -101,7 +106,7 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
 
     public void initializeButtons(){
         // decide what clicking the logout button does
-        findViewById(R.id.bLogOut).setOnClickListener(new View.OnClickListener() {
+        logOutButton.setOnClickListener(new View.OnClickListener() {
           public void onClick(View v) {
               // Code here executes on main thread after user presses button
               FirebaseAuth.getInstance().signOut();
@@ -110,14 +115,21 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
           }
         });
 
+        pairButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToPairingActivity();
+            }
+        });
+
+
+
     }
 
-    // decides what the back button does
-    public void onBackPressed() {
-        moveTaskToBack(true);
+    public void goToPairingActivity(){
+        Intent intent = new Intent(this, PairingActivity.class);
+        startActivity(intent);
     }
-
-
 
     // manages the log out of the user
     private void signOut(){
