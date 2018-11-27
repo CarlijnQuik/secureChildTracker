@@ -79,7 +79,7 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         database = FirebaseDatabase.getInstance().getReference(user.getUid());
 
         // define view
-        pairButton = (Button) findViewById(R.id.pairPhone);
+        pairButton = (Button) findViewById(R.id.pairPhoneWithChild);
         logOutButton = (Button) findViewById(R.id.bLogOut);
 
         // initialize the map

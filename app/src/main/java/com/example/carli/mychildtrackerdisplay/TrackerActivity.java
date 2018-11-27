@@ -23,7 +23,7 @@ import javax.xml.transform.Result;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class TrackerActivity extends Activity implements ZXingScannerView.ResultHandler {
+public class TrackerActivity extends Activity {
 
     private static final int PERMISSIONS_REQUEST = 1;
     private static final String TAG = TrackerService.class.getSimpleName();
@@ -58,13 +58,18 @@ public class TrackerActivity extends Activity implements ZXingScannerView.Result
                     PERMISSIONS_REQUEST);
         }
 
-        int permissionCamera = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA);
-        if (permissionCamera == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    PERMISSIONS_REQUEST);
-        }
+        findViewById(R.id.pairPhoneWithParent).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToPairingActivity();
+            }
+        });
+
+    }
+
+    public void goToPairingActivity(){
+        Intent intent = new Intent(this, PairingActivity.class);
+        startActivity(intent);
     }
 
     @Override

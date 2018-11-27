@@ -1,6 +1,10 @@
 package com.example.carli.mychildtrackerdisplay;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,7 +19,7 @@ import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class PairingActivity extends AppCompatActivity {
+public class PairingActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
     ImageView displayQR;
     Button generateQR;
@@ -23,6 +27,7 @@ public class PairingActivity extends AppCompatActivity {
     int QRVisible = 0;
     String QRCode;
     private ZXingScannerView zXingScannerView;
+    private static final int PERMISSIONS_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,14 @@ public class PairingActivity extends AppCompatActivity {
         scanQR = (Button) findViewById(R.id.scanQR);
 
         initializeButtons();
+
+        int permissionCamera = ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.CAMERA);
+        if (permissionCamera == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    PERMISSIONS_REQUEST);
+        }
     }
 
     public void onBackPressed() {
