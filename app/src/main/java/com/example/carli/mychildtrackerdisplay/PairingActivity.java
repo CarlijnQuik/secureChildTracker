@@ -16,6 +16,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.zxing.WriterException;
 
 import java.security.Key;
@@ -49,8 +53,9 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
     private SecretKey key;
     private Integer nonce = 0;
     private String userType;
-
-
+    FirebaseUser user =  FirebaseAuth.getInstance().getCurrentUser();
+    DatabaseReference database = FirebaseDatabase.getInstance().getReference(user.getUid());
+    private String partnerid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,7 +119,7 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
 //                }
                 Log.d("clicked", "childGenerateQR clicked");
 
-                generateQR("THIS IS ID OF THE CHILD");
+                generateQR(user.getUid());
             }
         });
 
@@ -149,6 +154,8 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
                     String output = new String(bytes);
                     output += "////";
                     output += nonce.toString();
+                    output += "////";
+                    output += user.getUid();
                     Log.d("PARENTCHILDkey", output);
                     generateQR(output);
 
@@ -235,11 +242,25 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
         String[]data = qrCode.split("////");
         nonce = Integer.decode(data[1]);
         key = new SecretKeySpec(data[0].getBytes(), 0, data[0].length(), KeyProperties.KEY_ALGORITHM_AES);
+        database.child("partnerid").setValue(data[2]);
+
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            byte[] ciphertext = cipher.doFinal(nonce.toString().getBytes());
+            database.child("securitycheck").setValue(ciphertext);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
 
     }
 
     private void processQRparent(String qrCode){
-
+        database.child("partnerid").setValue(qrCode);
+        partnerid = qrCode;
     }
 
 }
