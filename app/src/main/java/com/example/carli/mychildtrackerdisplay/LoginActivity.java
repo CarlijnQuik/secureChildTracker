@@ -275,7 +275,7 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
         //database.setValue(ue);
 
         //FirebaseRepository firebaseRepository = new FirebaseRepository();
-        //UserEntry userEntry = firebaseRepository.getUserEntry();
+        //UserEntry userEntry = firebaseRepository.getUserEntry();//
         Intent intent = new Intent(this, DisplayActivity.class);
         startActivity(intent);
 
