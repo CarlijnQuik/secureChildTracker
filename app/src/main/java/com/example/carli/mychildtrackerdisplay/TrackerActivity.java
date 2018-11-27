@@ -23,14 +23,12 @@ import javax.xml.transform.Result;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class TrackerActivity extends Activity implements ZXingScannerView.ResultHandler {
+public class TrackerActivity extends Activity {
 
     private static final int PERMISSIONS_REQUEST = 1;
     private static final String TAG = TrackerService.class.getSimpleName();
-    private ZXingScannerView zXingScannerView;
     FirebaseUser user;
     DatabaseReference database;
-    String QRCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,30 +58,23 @@ public class TrackerActivity extends Activity implements ZXingScannerView.Result
                     PERMISSIONS_REQUEST);
         }
 
-        int permissionCamera = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA);
-        if (permissionCamera == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    PERMISSIONS_REQUEST);
-        }
+        findViewById(R.id.pairPhoneWithParent).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToPairingActivity();
+            }
+        });
+
     }
 
-    public void scanQR(View view){
-        // Code here executes on main thread after user presses button
-        zXingScannerView = new ZXingScannerView(getApplicationContext());
-        setContentView(zXingScannerView);
-        zXingScannerView.setResultHandler(this);
-        zXingScannerView.startCamera();
-
+    public void goToPairingActivity(){
+        Intent intent = new Intent(this, PairingActivity.class);
+        startActivity(intent);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(zXingScannerView != null) {
-            zXingScannerView.stopCamera();
-        }
 
     }
 
@@ -120,13 +111,5 @@ public class TrackerActivity extends Activity implements ZXingScannerView.Result
         }
     }
 
-    @Override
-    public void handleResult(com.google.zxing.Result result) {
-        Toast.makeText(getApplicationContext(),result.getText(),Toast.LENGTH_SHORT).show();
-        zXingScannerView.resumeCameraPreview(this);
 
-        QRCode = result.toString();
-        Log.d("Scanning result:", QRCode);
-
-    }
 }

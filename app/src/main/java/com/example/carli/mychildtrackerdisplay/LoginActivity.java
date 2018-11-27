@@ -252,6 +252,7 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
     }
 
     public void forwardUser(){
+        //getValueFromDatabase();
         userType = sharedPref.getString("userType", "DEFAULT");
         checkUser(userType);
 
@@ -268,13 +269,13 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
     }
 
     public void forwardParent(){
-        UserEntry ue = new UserEntry();
-        ue.setInterval(5);
-        ue.setSecurity_check("blabla");
-        database.setValue(ue);
+        //UserEntry ue = new UserEntry();
+        //ue.setInterval(5);
+        //ue.setSecurity_check("blabla");
+        //database.setValue(ue);
 
-        FirebaseRepository firebaseRepository = new FirebaseRepository();
-        UserEntry userEntry = firebaseRepository.getUserEntry();
+        //FirebaseRepository firebaseRepository = new FirebaseRepository();
+        //UserEntry userEntry = firebaseRepository.getUserEntry(); ////
         Intent intent = new Intent(this, DisplayActivity.class);
         startActivity(intent);
 
@@ -286,6 +287,35 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
 
     }
 
+    public void getValueFromDatabase(){
+        database.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d("datasnapshot", dataSnapshot.toString());
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
 }
-

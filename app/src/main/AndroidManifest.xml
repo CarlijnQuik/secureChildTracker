@@ -48,7 +48,8 @@
         </activity>
         <activity android:name=".LoginProgressDialog" />
         <activity android:name=".DisplayActivity" />
-        <activity android:name=".TrackerActivity"></activity>
+        <activity android:name=".TrackerActivity" />
+        <activity android:name=".PairingActivity" />
 
     <service
         android:name=".TrackerService"

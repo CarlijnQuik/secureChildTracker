@@ -49,7 +49,6 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
     private HashMap<String, Marker> mMarkers = new HashMap<>();
     private GoogleMap mMap;
     FirebaseUser user;
-    ImageView QRCode;
 
     DatabaseReference database;
     ListView listOfLocations;
@@ -58,10 +57,10 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
     AlertDialog.Builder builder;
     Location location;
     Button pairButton;
+    Button logOutButton;
 
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
-    int QRVisible = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,19 +78,22 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         user =  FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference(user.getUid());
 
-        // define views
-        QRCode = (ImageView) findViewById(R.id.qrDisplay);
-        pairButton = (Button) findViewById(R.id.pairPhone);
-
-
-
+        // define view
+        pairButton = (Button) findViewById(R.id.pairPhoneWithChild);
+        logOutButton = (Button) findViewById(R.id.bLogOut);
 
         // initialize the map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        }
+    }
+
+    // decides what the back button does
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
+
 
 
     public void initializeAdapter(){
@@ -104,69 +106,29 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
 
     public void initializeButtons(){
         // decide what clicking the logout button does
-        findViewById(R.id.bLogOut).setOnClickListener(new View.OnClickListener() {
-          public void onClick(View v) {
-              // Code here executes on main thread after user presses button
-              FirebaseAuth.getInstance().signOut();
-              signOut();
-              Toast.makeText(DisplayActivity.this, "Signed out", LENGTH_SHORT).show();
-          }
-        });
-
-        // decide what clicking the generate QR code button does
-        findViewById(R.id.pairPhone).setOnClickListener(new View.OnClickListener() {
+        logOutButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (QRVisible == 1) {
-                    QRCode.setVisibility(View.INVISIBLE);
-                    pairButton.setText("Generate QR code");
-                    QRVisible = 0;
-                } else if (QRVisible == 0) {
-                    generateQR();
-                    QRCode.setVisibility(View.VISIBLE);
-                    pairButton.setText("Close QR code");
-                    QRVisible = 1;
-
-                }
+                // Code here executes on main thread after user presses button
+                FirebaseAuth.getInstance().signOut();
+                signOut();
+                Toast.makeText(DisplayActivity.this, "Signed out", LENGTH_SHORT).show();
             }
         });
+
+        pairButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToPairingActivity();
+            }
+        });
+
+
+
     }
 
-    // decides what the back button does
-    public void onBackPressed() {
-        moveTaskToBack(true);
-    }
-
-    // generates a QR code and displays it on the screen
-    private void generateQR(){
-        String randomString = "Hola!";
-
-        QRGEncoder qrgEncoder = new QRGEncoder(randomString,
-                null,
-                QRGContents.Type.TEXT,
-                (int) 400d);
-
-        //database.child("QRKey").setValue(randomString);
-        editor.putString("QR Code", randomString);
-        Log.d(TAG, randomString);
-        editor.commit();
-
-        try {
-            // Getting QR-Code as Bitmap
-            Bitmap bitmap = qrgEncoder.encodeAsBitmap();
-
-            // Setting Bitmap to ImageView
-
-            QRCode.setImageBitmap(bitmap);
-            //QRCode.setVisibility(View.VISIBLE);
-            //QRGSaver.save(savePath, edtValue.getText().toString().trim(), bitmap, QRGContents.ImageType.IMAGE_JPEG);
-
-
-
-
-        } catch (WriterException e) {
-            Log.v(TAG, e.toString());
-        }
-
+    public void goToPairingActivity(){
+        Intent intent = new Intent(this, PairingActivity.class);
+        startActivity(intent);
     }
 
     // manages the log out of the user
@@ -266,15 +228,14 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         }
     }
 
-        // extract the current location from the hashmap
-        public Location newLocation (HashMap < String, Object > hashMap){
-            location = new Location();
-            location.longitude = Double.parseDouble(hashMap.get("longitude").toString());
-            location.latitude = Double.parseDouble(hashMap.get("latitude").toString());
-            location.timestamp = Long.parseLong(hashMap.get("time").toString());
+    // extract the current location from the hashmap
+    public Location newLocation (HashMap < String, Object > hashMap){
+        location = new Location();
+        location.longitude = Double.parseDouble(hashMap.get("longitude").toString());
+        location.latitude = Double.parseDouble(hashMap.get("latitude").toString());
+        location.timestamp = Long.parseLong(hashMap.get("time").toString());
 
-            return location;
-        }
+        return location;
+    }
 
 }
-
