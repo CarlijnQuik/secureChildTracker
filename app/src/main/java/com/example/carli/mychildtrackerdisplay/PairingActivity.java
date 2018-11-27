@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -151,7 +152,7 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
 
                     Log.d("clicked", "parentGenerateQR clicked");
                     byte[] bytes = key.getEncoded();
-                    String output = new String(bytes);
+                    String output = Base64.encodeToString(bytes, Base64.DEFAULT);
                     output += "////";
                     output += nonce.toString();
                     output += "////";
@@ -241,15 +242,16 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
     private void processQRchild(String qrCode) {
         String[]data = qrCode.split("////");
         nonce = Integer.decode(data[1]);
-        key = new SecretKeySpec(data[0].getBytes(), 0, data[0].length(), KeyProperties.KEY_ALGORITHM_AES);
-        database.child("partnerid").setValue(data[2]);
+        key = new SecretKeySpec(Base64.decode(data[0], Base64.DEFAULT), 0, data[0].length(), KeyProperties.KEY_ALGORITHM_AES);
+        database.child("partnerID").setValue(data[2]);
 
         Cipher cipher = null;
         try {
             cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] ciphertext = cipher.doFinal(nonce.toString().getBytes());
-            database.child("securitycheck").setValue(ciphertext);
+            database.child("securityCheck").setValue(new String(ciphertext));
+            Log.d("PARENTCHILDkey", new String(ciphertext));
         }
         catch (Exception e){
             e.printStackTrace();
@@ -259,7 +261,7 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
     }
 
     private void processQRparent(String qrCode){
-        database.child("partnerid").setValue(qrCode);
+        database.child("partnerID").setValue(qrCode);
         partnerid = qrCode;
     }
 
