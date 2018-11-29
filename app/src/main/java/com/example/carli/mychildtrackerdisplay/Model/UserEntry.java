@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class UserEntry {
     private String usertype;
-    private String partner_id;
+    private String partnerID;
     private Map<Integer, Location> locationList;
     private Integer interval;
     private String security_check;
@@ -21,12 +21,12 @@ public class UserEntry {
         this.usertype = usertype;
     }
 
-    public String getPartner_id() {
-        return partner_id;
+    public String getPartnerID() {
+        return partnerID;
     }
 
-    public void setPartner_id(String partner_id) {
-        this.partner_id = partner_id;
+    public void setPartnerID(String partnerID) {
+        this.partnerID = partnerID;
     }
 
     public Map<Integer, Location> getLocationList() {
@@ -53,9 +53,9 @@ public class UserEntry {
         this.security_check = security_check;
     }
 
-    public UserEntry(String usertype, String partner_id, Map<Integer, Location> locationList, Integer interval, String security_check) {
+    public UserEntry(String usertype, String partnerID, Map<Integer, Location> locationList, Integer interval, String security_check) {
         this.usertype = usertype;
-        this.partner_id = partner_id;
+        this.partnerID = partnerID;
         this.locationList = locationList;
         this.interval = interval;
         this.security_check = security_check;
