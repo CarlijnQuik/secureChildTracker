@@ -6,6 +6,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 
+import com.example.carli.mychildtrackerdisplay.Model.UserEntry;
 import com.example.carli.mychildtrackerdisplay.Repository.FirebaseDatabaseRepository;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,9 +18,8 @@ public class BaseViewModel extends ViewModel {
 
 private FirebaseDatabaseRepository repository;
 private FirebaseUser user;
+private MutableLiveData<UserEntry> currentUser;
 
-
-private MutableLiveData<String> userType;
 private FirebaseAuth firebaseAuth;
 private DatabaseReference database;
 
@@ -30,8 +30,9 @@ private DatabaseReference database;
                 user = firebaseAuth.getCurrentUser();
             if (user != null) {
                 database = FirebaseDatabase.getInstance().getReference(user.getUid());
-                loadUserType();
             }
+            if (currentUser == null)
+                loadUserData();
         }
         catch (Exception e){
             Log.d("MCT", e.getMessage());
@@ -46,12 +47,11 @@ private DatabaseReference database;
             return null;
         }
     }
-    public void loadUserType(){
-         database.child("userType").
-                addListenerForSingleValueEvent(new ValueEventListener() {
+    public void loadUserData(){
+        database.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                userType.setValue(dataSnapshot.getValue(String.class));
+                currentUser.setValue(dataSnapshot.getValue(UserEntry.class));
             }
 
             @Override
@@ -61,11 +61,10 @@ private DatabaseReference database;
         });
     }
 
-    public LiveData<String> getUserType(){
-        if (userType == null) {
-            userType = new MutableLiveData<String>();
-        }
-        return userType;
+    public LiveData<UserEntry> getCurrentUser(){
+        if (currentUser == null)
+            currentUser = new MutableLiveData<>();
+        return currentUser;
     }
 
 

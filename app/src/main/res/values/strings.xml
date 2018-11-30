@@ -47,4 +47,14 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <string name="showQR_button">Display my QR code</string>
+    <string name="scanQR_button">Scan my partner\'s QR code</string>
+
+    <string name="pairing_child_1">1. Push the button above to display your QR code.</string>
+    <string name="pairing_child_2">2. Now push the button above to scan your parent\'s QR code.</string>
+
+    <string name="pairing_parent_1">1. Push the button above to scan your child\'s QR code.</string>
+    <string name="pairing_parent_2">2. Now push the button above to display your QR code.</string>
+
 </resources>
