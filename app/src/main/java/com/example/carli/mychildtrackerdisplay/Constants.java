@@ -7,4 +7,7 @@ public final class Constants {
     public static final String LOG_TAG = "MCHT";
 
     public static final String DATA_DELIM = "///";
+
+    public static final String DB_CHILD_SECURITYCHECK = "securityCheck";
+    public static final String DB_CHILD_PARTNERID = "partnerID";
 }

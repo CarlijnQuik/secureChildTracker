@@ -276,13 +276,13 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
 
         //FirebaseRepository firebaseRepository = new FirebaseRepository();
         //UserEntry userEntry = firebaseRepository.getUserEntry(); ////
-        Intent intent = new Intent(this, DisplayActivity.class);
+        Intent intent = new Intent(this, PairingXActivity.class);
         startActivity(intent);
 
     }
 
     public void forwardChild(){
-        Intent intent = new Intent(this, TrackerActivity.class);
+        Intent intent = new Intent(this, PairingXActivity.class);
         startActivity(intent);
 
     }
