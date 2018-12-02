@@ -92,6 +92,8 @@ public class PairingXActivity extends AppCompatActivity {
                 case 3:
                     introductionText.setText(R.string.pairing_success);
                     displayQRimageview.setImageResource(R.drawable.check);
+                    scanQRbutton.setVisibility(View.INVISIBLE);
+                    showQRbutton.setVisibility(View.INVISIBLE);
                     break;
                 default:
                     introductionText.setText("Stepping error");
@@ -114,6 +116,8 @@ public class PairingXActivity extends AppCompatActivity {
                     introductionText.setText(R.string.pairing_parent_2);
                     break;
                 case 3:
+                    scanQRbutton.setVisibility(View.INVISIBLE);
+                    showQRbutton.setVisibility(View.INVISIBLE);
                     introductionText.setText(R.string.pairing_success);
                     displayQRimageview.setImageResource(R.drawable.check);
                     break;
@@ -156,11 +160,11 @@ public class PairingXActivity extends AppCompatActivity {
         Log.d(Constants.LOG_TAG, userType+"'s NONCE1 is "+pairingViewModel.getNonce1());
 
         try {
-                Bitmap bitmap = qrgEncoder.encodeAsBitmap();
-                displayQRimageview.setImageBitmap(bitmap);
-            } catch (WriterException e) {
-                Log.v("TAG", e.toString());
-            }
+            Bitmap bitmap = qrgEncoder.encodeAsBitmap();
+            displayQRimageview.setImageBitmap(bitmap);
+        } catch (WriterException e) {
+            Log.v("TAG", e.toString());
+        }
     }
     private void scanQRandProcess() {
 

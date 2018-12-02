@@ -3,6 +3,7 @@ package com.example.carli.mychildtrackerdisplay.ViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.security.keystore.KeyProperties;
+import android.security.keystore.KeyProtection;
 import android.util.Base64;
 import android.util.Log;
 
@@ -13,13 +14,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.security.NoSuchAlgorithmException;
+import java.security.KeyStore;
 import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class PairingViewModel extends BaseViewModel {
@@ -27,8 +28,7 @@ public class PairingViewModel extends BaseViewModel {
     private Integer nonce1, nonce2;
     private String partnerID;
     private Integer step = 1;
-    private SecretKey key;
-    private byte[] iv;
+    private KeyStore keyStore = null;
     private MutableLiveData<String> partnersSecurityCheck;
 
     public Integer getNonce1() {
@@ -60,6 +60,30 @@ public class PairingViewModel extends BaseViewModel {
         return random.nextInt();
     }
 
+    public PairingViewModel(){
+        try {
+            keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+        }
+        catch (Exception e){
+            Log.d(Constants.LOG_TAG,"Error initiating AndroidKeyStore: "+e.getMessage());
+        }
+    }
+    private void saveKeyIntoKeystore(byte[] bytes){
+        try {
+            keyStore.setEntry(
+                    Constants.KEY_ALIAS,
+                    new KeyStore.SecretKeyEntry(new SecretKeySpec(bytes, 0, bytes.length, KeyProperties.KEY_ALGORITHM_AES)),
+            new KeyProtection.Builder(KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+                    .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                    .build());
+
+        } catch (Exception ex) {
+            Log.d(Constants.LOG_TAG, ex.getMessage());
+        }
+    }
+
     public boolean processQR(String userType, String data) {
         String[] result = data.split(Constants.DATA_DELIM);
 
@@ -73,7 +97,8 @@ public class PairingViewModel extends BaseViewModel {
                 nonce2 = Integer.decode(result[2]);
                 partnerID = result[3];
                 byte[] bytes = Base64.decode(result[0], Base64.DEFAULT);
-                key = new SecretKeySpec(bytes, 0, bytes.length, KeyProperties.KEY_ALGORITHM_AES);
+
+                saveKeyIntoKeystore(bytes);
                 encryptSecCheck();
                 setPartnerID(partnerID);
                 return true;
@@ -84,12 +109,11 @@ public class PairingViewModel extends BaseViewModel {
 
         }
         else if (userType.equals(Constants.USERTYPE_PARENT)) {
-            if (result.length != 3)
+            if (result.length != 2)
                 return false;
             try {
                 nonce1 = Integer.decode(result[1]);
                 partnerID = result[0];
-                iv = Base64.decode(result[2], Base64.DEFAULT);
                 return true;
             } catch (Exception e) {
                 return false;
@@ -102,29 +126,32 @@ public class PairingViewModel extends BaseViewModel {
     public String generateQR(String userType){
         String QR = new String();
         if (userType.equals(Constants.USERTYPE_CHILD)) {
-            SecureRandom random = new SecureRandom();
-            iv = new byte[16];
-            random.nextBytes(iv);
             nonce1 = generateNonce();
             QR = this.getUserID();
             QR += Constants.DATA_DELIM;
             QR += nonce1;
-            QR += Constants.DATA_DELIM;
-            QR += Base64.encodeToString(iv, Base64.DEFAULT);
         }
         else if (userType.equals(Constants.USERTYPE_PARENT)){
+            SecretKey tempkey = null;
             try {
                 KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES);
                 keyGenerator.init(128);
-                key = keyGenerator.generateKey();
+                tempkey = keyGenerator.generateKey();
+                saveKeyIntoKeystore(tempkey.getEncoded());
 
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                Log.d(Constants.LOG_TAG, "Error generating/saving the key. "+e.getMessage());
             }
             Integer fromnonce = nonce1+1;
             nonce2 = this.generateNonce();
-            byte[] bytes = key.getEncoded();
-            QR = Base64.encodeToString(bytes, Base64.DEFAULT);
+            try {
+                byte[] bytes = tempkey.getEncoded();
+                // TODO destroy tempkey
+                QR = Base64.encodeToString(bytes, Base64.DEFAULT);
+            }
+            catch (Exception e){
+                Log.d(Constants.LOG_TAG, "Error getting key from keystore.");
+            }
             QR = QR.replaceAll("\n", "");
             QR += Constants.DATA_DELIM;
             QR += fromnonce.toString();
@@ -142,13 +169,16 @@ public class PairingViewModel extends BaseViewModel {
         try {
             Integer finalnonce = nonce2+1;
             Log.d(Constants.LOG_TAG, "FINALNONCE: "+finalnonce);
-            cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-            cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
+            cipher = Cipher.getInstance(Constants.CIPHER_TYPE);
+            cipher.init(Cipher.ENCRYPT_MODE, (SecretKey) keyStore.getKey(Constants.KEY_ALIAS, null));
+            byte[] iv = cipher.getIV();
             byte[] ciphertext = cipher.doFinal(finalnonce.toString().getBytes());
-            setSecurityCheck(new String(Base64.encode(ciphertext,Base64.DEFAULT)));
+            Log.d(Constants.LOG_TAG, "TOENCRYPT: "+finalnonce.toString().getBytes().toString());
+            setSecurityCheck(Base64.encodeToString(iv,Base64.DEFAULT)+Constants.DATA_DELIM+Base64.encodeToString(ciphertext,Base64.DEFAULT));
             Log.d(Constants.LOG_TAG, new String(ciphertext));
         }
         catch (Exception e){
+            Log.d(Constants.LOG_TAG,"Error encrypting securityCheck: "+e.getMessage());
             e.printStackTrace();
         }
 
@@ -171,11 +201,20 @@ public class PairingViewModel extends BaseViewModel {
 
 
     public boolean decryptSecCheck(String val){
+        if (val == null)
+            return false;
+
         Cipher cipher = null;
+        String[] result = val.split(Constants.DATA_DELIM);
+        if (result.length != 2){
+            Log.d(Constants.LOG_TAG, "Incorrect securityCheck length.");
+            return false;
+        }
         try {
-            cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-            cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
-            byte[] bytes = cipher.doFinal(Base64.decode(val.getBytes(), Base64.DEFAULT));
+            cipher = Cipher.getInstance(Constants.CIPHER_TYPE);
+            GCMParameterSpec ivSpec = new GCMParameterSpec(128, Base64.decode(result[0], Base64.DEFAULT));
+            cipher.init(Cipher.DECRYPT_MODE, (SecretKey) keyStore.getKey(Constants.KEY_ALIAS, null), ivSpec);
+            byte[] bytes = cipher.doFinal(Base64.decode(result[1].getBytes(), Base64.DEFAULT));
             String noncex = new String(bytes);
             Integer noncey = Integer.parseInt(noncex);
             Log.d(Constants.LOG_TAG, "RECEIVED NONCE: "+noncey);
@@ -187,10 +226,9 @@ public class PairingViewModel extends BaseViewModel {
                 return false;
         }
         catch (Exception e){
-            Log.d(Constants.LOG_TAG, "Error decrypting securityCheck. Key: " + key.getEncoded().toString() + "; Exception: "+e.getMessage());
-            e.printStackTrace();
+            Log.d(Constants.LOG_TAG, "Error decrypting securityCheck. probably bad value in DB." + "; Exception: "+e.getMessage());
+            return false;
         }
-        return false;
     }
 
     public String getPartnerID(){
