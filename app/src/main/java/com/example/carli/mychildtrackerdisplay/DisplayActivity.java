@@ -1,12 +1,14 @@
 package com.example.carli.mychildtrackerdisplay;
 
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -238,6 +240,22 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         location.timestamp = Long.parseLong(hashMap.get("time").toString());
 
         return location;
+    }
+
+    private void SOSNotification() {
+        String SOS = "Stop SOS notification";
+        PendingIntent broadcastIntent = PendingIntent.getBroadcast(
+                this, 0, new Intent(SOS), PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Create the persistent notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText("SOS: Your child is in danger!")
+                .setOngoing(true)
+                .setContentIntent(broadcastIntent)
+                .setSmallIcon(R.drawable.ic_stat_name);
+        builder.build();
+
     }
 
 }
