@@ -50,13 +50,14 @@
         <activity android:name=".LoginProgressDialog" />
         <activity android:name=".DisplayActivity" />
         <activity android:name=".TrackerActivity" />
-        <activity android:name=".PairingActivity" />
         <activity android:name=".PairingXActivity" />
+
         <service
             android:name=".TrackerService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
+        <activity android:name=".SOSActivity"></activity>
     </application>
 
 </manifest>

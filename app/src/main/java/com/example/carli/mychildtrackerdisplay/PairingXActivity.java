@@ -3,6 +3,7 @@ package com.example.carli.mychildtrackerdisplay;
 import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
@@ -94,6 +95,10 @@ public class PairingXActivity extends AppCompatActivity {
                     displayQRimageview.setImageResource(R.drawable.check);
                     scanQRbutton.setVisibility(View.INVISIBLE);
                     showQRbutton.setVisibility(View.INVISIBLE);
+
+                    // go to the SOS activity
+                    Intent intent = new Intent(this, SOSActivity.class);
+                    startActivity(intent);
                     break;
                 default:
                     introductionText.setText("Stepping error");
