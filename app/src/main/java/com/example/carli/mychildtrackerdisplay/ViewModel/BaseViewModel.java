@@ -81,5 +81,8 @@ private DatabaseReference database;
     public void setPartnerID(String val){
         database.child(Constants.DB_CHILD_PARTNERID).setValue(val);
     }
+    public void setSOS(boolean val){
+        database.child(Constants.DB_CHILD_SOS).setValue(val);
+    }
 
 }
