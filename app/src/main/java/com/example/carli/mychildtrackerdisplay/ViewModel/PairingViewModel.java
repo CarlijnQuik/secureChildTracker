@@ -184,7 +184,7 @@ public class PairingViewModel extends BaseViewModel {
 
     }
     public void checkPartnersSecurityCheck(){
-        DatabaseReference refx = FirebaseDatabase.getInstance().getReference(getPartnerID()).child(Constants.DB_CHILD_SECURITYCHECK);
+        DatabaseReference refx = FirebaseDatabase.getInstance().getReference(getPartnerID()).child(Constants.DB_ENTRY_SECURITYCHECK);
         refx.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -1,22 +1,16 @@
 package com.example.carli.mychildtrackerdisplay.ViewModel;
 
-import android.animation.Animator;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.carli.mychildtrackerdisplay.Constants;
 import com.example.carli.mychildtrackerdisplay.Model.UserEntry;
 import com.example.carli.mychildtrackerdisplay.Repository.FirebaseDatabaseRepository;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.*;
-import java.util.List;
 
 public class BaseViewModel extends ViewModel {
 
@@ -76,13 +70,13 @@ private DatabaseReference database;
     }
 
     public void setSecurityCheck(String val){
-        database.child(Constants.DB_CHILD_SECURITYCHECK).setValue(val);
+        database.child(Constants.DB_ENTRY_SECURITYCHECK).setValue(val);
     }
     public void setPartnerID(String val){
-        database.child(Constants.DB_CHILD_PARTNERID).setValue(val);
+        database.child(Constants.DB_ENTRY_PARTNERID).setValue(val);
     }
     public void setSOS(boolean val){
-        database.child(Constants.DB_CHILD_SOS).setValue(val);
+        database.child(Constants.DB_ENTRY_SOS).setValue(val);
     }
 
 }
