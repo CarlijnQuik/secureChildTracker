@@ -48,9 +48,10 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
     private static final String TAG = "logged";
     private HashMap<String, Marker> mMarkers = new HashMap<>();
     private GoogleMap mMap;
-    FirebaseUser user;
 
+    FirebaseUser user;
     DatabaseReference database;
+
     ListView listOfLocations;
     ArrayList<Location> locations;
     LocationAdapter locationAdapter;
@@ -70,6 +71,11 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         editor = sharedPref.edit();
 
+        // define view
+        pairButton = (Button) findViewById(R.id.pairPhoneWithChild);
+        logOutButton = (Button) findViewById(R.id.bLogOut);
+
+
         // initialize buttons and adapter
         initializeButtons();
         initializeAdapter();
@@ -77,10 +83,6 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         // initialize Firebase
         user =  FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference(user.getUid());
-
-        // define view
-        pairButton = (Button) findViewById(R.id.pairPhoneWithChild);
-        logOutButton = (Button) findViewById(R.id.bLogOut);
 
         // initialize the map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()

@@ -25,6 +25,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+
 import static android.widget.Toast.LENGTH_SHORT;
 
 /**
@@ -42,9 +44,6 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
     private DatabaseReference database;
     private FirebaseUser user;
 
-    SharedPreferences sharedPref;
-    SharedPreferences.Editor editor;
-
     String userType;
 
     @Override
@@ -60,9 +59,6 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
         findViewById(R.id.bLogIn).setOnClickListener(this);
         findViewById(R.id.bCreateAccount).setOnClickListener(this);
 
-        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        editor = sharedPref.edit();
-
     }
 
     public void initializeFirebase(){
@@ -70,16 +66,19 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                user = firebaseAuth.getCurrentUser();
+                //user = firebaseAuth.getCurrentUser();
+                user = FirebaseAuth.getInstance().getCurrentUser();
+                Log.d("user ID", user.getUid());
+                database = FirebaseDatabase.getInstance().getReference(user.getUid());
 
-                if (user != null) {
+                //if (user != null) {
                     // user is logged in
-                    database = FirebaseDatabase.getInstance().getReference(user.getUid());
+                  //  database = FirebaseDatabase.getInstance().getReference(user.getUid());
 
-                    forwardUser();
-                    Toast.makeText(LoginActivity.this, "Logged in", LENGTH_SHORT).show();
+                    //forwardUser();
+                    //Toast.makeText(LoginActivity.this, "Logged in", LENGTH_SHORT).show();
 
-                }
+                //}
 
             }
         };
@@ -170,7 +169,7 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
                             Toast.makeText(LoginActivity.this, R.string.auth_failed, LENGTH_SHORT).show();
 
                         } else if (task.isSuccessful()) {
-                            forwardUser();
+                            getValueFromDatabase();
 
                         }
 
@@ -218,11 +217,7 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
                         // parent button clicked
                         userType = "parent";
 
-                        database = FirebaseDatabase.getInstance().getReference(user.getUid());
                         database.child("userType").setValue(userType);
-
-                        editor.putString("userType", userType);
-                        editor.commit();
 
                         forwardParent();
 
@@ -232,11 +227,7 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
                         //child button clicked
                         userType = "child";
 
-                        database = FirebaseDatabase.getInstance().getReference(user.getUid());
                         database.child("userType").setValue(userType);
-
-                        editor.putString("userType", userType);
-                        editor.commit();
 
                         forwardChild();
 
@@ -248,13 +239,6 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you a parent or a child?").setPositiveButton("Parent", dialogClickListener)
                 .setNegativeButton("Child", dialogClickListener).show();
-
-    }
-
-    public void forwardUser(){
-        //getValueFromDatabase();
-        userType = sharedPref.getString("userType", "DEFAULT");
-        checkUser(userType);
 
     }
 
@@ -276,27 +260,37 @@ public class LoginActivity extends LoginProgressDialog implements View.OnClickLi
 
         //FirebaseRepository firebaseRepository = new FirebaseRepository();
         //UserEntry userEntry = firebaseRepository.getUserEntry(); ////
-        Intent intent = new Intent(this, PairingXActivity.class);
+        Intent intent = new Intent(this, DisplayActivity.class);
         startActivity(intent);
 
     }
 
     public void forwardChild(){
-        Intent intent = new Intent(this, PairingXActivity.class);
+
+        Intent intent = new Intent(this, TrackerActivity.class);
         startActivity(intent);
+
 
     }
 
     public void getValueFromDatabase(){
-        database.addChildEventListener(new ChildEventListener() {
+        Log.d("current user", user.getUid());
+        //database = FirebaseDatabase.getInstance().getReference(user.getUid());
+        database.child("userType").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d("datasnapshot", dataSnapshot.toString());
+
+                userType = dataSnapshot.getValue().toString();
+                Log.d("userType", userType);
+                checkUser(userType);
 
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                userType = dataSnapshot.getValue().toString();
+                Log.d("userType", userType);
+                checkUser(userType);
 
             }
 
