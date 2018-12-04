@@ -10,18 +10,29 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.WriterException;
 
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import javax.crypto.*;
@@ -49,8 +60,10 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
     private SecretKey key;
     private Integer nonce = 0;
     private String userType;
-
-
+    FirebaseUser user =  FirebaseAuth.getInstance().getCurrentUser();
+    DatabaseReference database = FirebaseDatabase.getInstance().getReference(user.getUid());
+    private String partnerid;
+    private String securityCheck;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +76,7 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
         childGenerateQR = (Button) findViewById(R.id.childGenerateQR);
         childScanQR = (Button) findViewById(R.id.childScanQR);
 
-        initializeButtons();
+        //initializeButtons();
 
         int permissionCamera = ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.CAMERA);
@@ -95,7 +108,19 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
 
     }
 
+
+
     public void initializeButtons(){
+
+        findViewById(R.id.securitycheck).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    securityCheck();
+            }
+        });
+
+
+
 
         // decide what clicking the generate QR code button does
         childGenerateQR.setOnClickListener(new View.OnClickListener() {
@@ -114,9 +139,11 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
 //                }
                 Log.d("clicked", "childGenerateQR clicked");
 
-                generateQR("THIS IS ID OF THE CHILD");
+                generateQR(user.getUid());
             }
         });
+
+
 
         // decide what clicking the generate QR code button does
         parentGenerateQR.setOnClickListener(new View.OnClickListener() {
@@ -146,14 +173,18 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
 
                     Log.d("clicked", "parentGenerateQR clicked");
                     byte[] bytes = key.getEncoded();
-                    String output = new String(bytes);
+                    String output = Base64.encodeToString(bytes, Base64.DEFAULT);
+                    output = output.replaceAll("\n", "");
                     output += "////";
                     output += nonce.toString();
+                    output += "////";
+                    output += user.getUid();
                     Log.d("PARENTCHILDkey", output);
                     generateQR(output);
 
             }
         });
+
 
         childScanQR.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -235,17 +266,67 @@ public class PairingActivity extends AppCompatActivity implements ZXingScannerVi
             processQRparent(QRCode);
 
         Log.d("Scanning result:", QRCode);
-        startActivity(new Intent(this,PairingActivity.class));
+
     }
 
     private void processQRchild(String qrCode) {
         String[]data = qrCode.split("////");
-        nonce = Integer.decode(data[1]);
-        key = new SecretKeySpec(data[0].getBytes(), 0, data[0].length(), KeyProperties.KEY_ALGORITHM_AES);
+        nonce = Integer.decode(data[1])+1;
+        byte[] bytes = Base64.decode(data[0], Base64.DEFAULT);
+        key = new SecretKeySpec(bytes, 0, bytes.length, KeyProperties.KEY_ALGORITHM_AES);
+        database.child("partnerID").setValue(data[2]);
+
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            byte[] ciphertext = cipher.doFinal(nonce.toString().getBytes());
+            database.child("securityCheck").setValue(new String(Base64.encode(ciphertext,Base64.DEFAULT)));
+            Log.d("PARENTCHILDkey", new String(ciphertext));
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
 
     }
 
     private void processQRparent(String qrCode){
+        database.child("partnerID").setValue(qrCode);
+        partnerid = qrCode;
+    }
+
+    private void securityCheck(){
+
+Log.d("PARENTCHILDkey", "calling securityCheck");
+        database.child("securityCheck").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                securityCheck = dataSnapshot.getValue(String.class);
+                Log.d("PARENTCHILDkey", "datasnapshot " + dataSnapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            byte[] bytes = cipher.doFinal(Base64.decode(securityCheck.getBytes(), Base64.DEFAULT));
+            String noncex = new String(bytes);
+            Integer noncey = Integer.parseInt(noncex);
+            Log.d("PARENTCHILDkey", "Nonce received from DB: "+noncey.toString());
+            Log.d("PARENTCHILDkey", "Nonce saved: "+nonce.toString());
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
 
     }
 

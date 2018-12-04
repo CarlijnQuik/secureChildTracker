@@ -19,6 +19,7 @@
     <Button
         android:id="@+id/parentGenerateQR"
         android:text="Parent generate QR"
+        android:onClick="parentGenerateQR"
         android:layout_width="130dp"
         android:layout_height="54dp"
         android:layout_marginTop="350dp"
@@ -28,6 +29,7 @@
         android:id="@+id/parentScanQR"
         android:layout_width="130dp"
         android:layout_height="54dp"
+        android:onClick="parentScanQR"
         android:text="Parent scan QR"
         android:layout_marginTop="350dp"
         android:layout_marginStart="50dp" />
@@ -35,6 +37,7 @@
     <Button
         android:id="@+id/childGenerateQR"
         android:text="Child generate QR"
+        android:onClick="childGenerateQR"
         android:layout_width="130dp"
         android:layout_height="54dp"
         android:layout_marginTop="300dp"
@@ -42,11 +45,29 @@
 
     <Button
         android:id="@+id/childScanQR"
+        android:onClick="childScanQR"
         android:layout_width="130dp"
         android:layout_height="54dp"
         android:layout_marginTop="300dp"
         android:layout_marginStart="50dp"
         android:text="Child scan QR" />
+
+    <Button
+        android:id="@+id/securityCheck"
+        android:layout_width="130dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="400dp"
+        android:layout_marginStart="50dp"
+        android:text="Security check" />
+
+    <Button
+        android:id="@+id/securitycheck"
+        android:onClick="securityCheck"
+        android:layout_width="130dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="400dp"
+        android:layout_marginStart="50dp"
+        android:text="SecurityCheck" />
 
 
 </RelativeLayout>

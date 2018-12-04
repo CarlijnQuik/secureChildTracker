@@ -1,32 +1,37 @@
 package com.example.carli.mychildtrackerdisplay.Model;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 import java.util.Map;
 
+@IgnoreExtraProperties
 public class UserEntry {
-    private String usertype;
-    private String partner_id;
+    private String userType;
+    private String partnerID;
     private Map<Integer, Location> locationList;
+    private Map<Integer, String> data;
     private Integer interval;
-    private String security_check;
+    private String securityCheck;
 
     public UserEntry() {
 
     }
 
-    public String getUsertype() {
-        return usertype;
+
+    public String getUserType() {
+        return userType;
     }
 
-    public void setUsertype(String usertype) {
-        this.usertype = usertype;
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
-    public String getPartner_id() {
-        return partner_id;
+    public String getPartnerID() {
+        return partnerID;
     }
 
-    public void setPartner_id(String partner_id) {
-        this.partner_id = partner_id;
+    public void setPartnerID(String partnerID) {
+        this.partnerID = partnerID;
     }
 
     public Map<Integer, Location> getLocationList() {
@@ -45,19 +50,28 @@ public class UserEntry {
         this.interval = interval;
     }
 
-    public String getSecurity_check() {
-        return security_check;
+    public String getSecurityCheck() {
+        return securityCheck;
     }
 
-    public void setSecurity_check(String security_check) {
-        this.security_check = security_check;
+    public void setSecurityCheck(String securityCheck) {
+        this.securityCheck = securityCheck;
     }
 
-    public UserEntry(String usertype, String partner_id, Map<Integer, Location> locationList, Integer interval, String security_check) {
-        this.usertype = usertype;
-        this.partner_id = partner_id;
+    public Map<Integer, String> getData() {
+        return data;
+    }
+
+    public void setData(Map<Integer, String> data) {
+        this.data = data;
+    }
+
+    public UserEntry(String userType, String partnerID, Map<Integer, Location> locationList, Map<Integer, String> data, Integer interval, String securityCheck) {
+        this.userType = userType;
+        this.partnerID = partnerID;
         this.locationList = locationList;
+        this.data = data;
         this.interval = interval;
-        this.security_check = security_check;
+        this.securityCheck = securityCheck;
     }
 }

@@ -68,7 +68,7 @@ public class TrackerActivity extends Activity {
     }
 
     public void goToPairingActivity(){
-        Intent intent = new Intent(this, PairingActivity.class);
+        Intent intent = new Intent(this, PairingXActivity.class);
         startActivity(intent);
     }
 
