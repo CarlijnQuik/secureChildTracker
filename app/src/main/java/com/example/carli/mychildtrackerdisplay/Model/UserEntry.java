@@ -13,6 +13,9 @@ public class UserEntry {
     private Integer interval;
     private String securityCheck;
 
+
+    private boolean sos;
+
     public UserEntry() {
 
     }
@@ -66,12 +69,22 @@ public class UserEntry {
         this.data = data;
     }
 
-    public UserEntry(String userType, String partnerID, Map<Integer, Location> locationList, Map<Integer, String> data, Integer interval, String securityCheck) {
+
+    public boolean isSos() {
+        return sos;
+    }
+
+    public void setSos(boolean sos) {
+        this.sos = sos;
+    }
+
+    public UserEntry(String userType, String partnerID, Map<Integer, Location> locationList, Map<Integer, String> data, Integer interval, String securityCheck, boolean sos) {
         this.userType = userType;
         this.partnerID = partnerID;
         this.locationList = locationList;
         this.data = data;
         this.interval = interval;
         this.securityCheck = securityCheck;
+        this.sos = sos;
     }
 }

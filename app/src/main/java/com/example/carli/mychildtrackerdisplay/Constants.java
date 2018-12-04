@@ -10,6 +10,7 @@ public final class Constants {
 
     public static final String DB_CHILD_SECURITYCHECK = "securityCheck";
     public static final String DB_CHILD_PARTNERID = "partnerID";
+    public static final String DB_CHILD_SOS = "sos";
 
     public static final String KEY_ALIAS = "MyChildTrackerTecnicoKey";
     public static final String CIPHER_TYPE = "AES/GCM/NoPadding";
