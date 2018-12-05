@@ -8,8 +8,6 @@ import java.util.Map;
 public class UserEntry {
     private String userType;
     private String partnerID;
-    private Map<Integer, Location> locationList;
-    private Map<Integer, String> data;
     private Integer interval;
     private String securityCheck;
 
@@ -37,13 +35,6 @@ public class UserEntry {
         this.partnerID = partnerID;
     }
 
-    public Map<Integer, Location> getLocationList() {
-        return locationList;
-    }
-
-    public void setLocationList(Map<Integer, Location> locationList) {
-        this.locationList = locationList;
-    }
 
     public Integer getInterval() {
         return interval;
@@ -61,14 +52,6 @@ public class UserEntry {
         this.securityCheck = securityCheck;
     }
 
-    public Map<Integer, String> getData() {
-        return data;
-    }
-
-    public void setData(Map<Integer, String> data) {
-        this.data = data;
-    }
-
 
     public boolean isSos() {
         return sos;
@@ -78,11 +61,9 @@ public class UserEntry {
         this.sos = sos;
     }
 
-    public UserEntry(String userType, String partnerID, Map<Integer, Location> locationList, Map<Integer, String> data, Integer interval, String securityCheck, boolean sos) {
+    public UserEntry(String userType, String partnerID,  Integer interval, String securityCheck, boolean sos) {
         this.userType = userType;
         this.partnerID = partnerID;
-        this.locationList = locationList;
-        this.data = data;
         this.interval = interval;
         this.securityCheck = securityCheck;
         this.sos = sos;

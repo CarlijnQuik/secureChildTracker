@@ -20,7 +20,7 @@ import java.util.ArrayList;
  */
 
 
-public class LocationAdapter  extends BaseAdapter {
+public class LocationAdapter extends BaseAdapter {
 
     Activity activity;
     Context context;
@@ -53,8 +53,8 @@ public class LocationAdapter  extends BaseAdapter {
             TextView tvLongitude = (TextView) convertView.findViewById(R.id.tvLongitude);
 
             // set textview to show achievement name
-            if (location.getId_timestamp() != Double.MIN_VALUE) {
-                tvTimestamp.setText(""+location.getId_timestamp());
+            if (location.getTimestamp() != Double.MIN_VALUE) {
+                tvTimestamp.setText(""+location.getTimestamp());
             }
             if (location.getLatitude() != Double.MIN_VALUE) {
                 tvLatitude.setText(""+location.getLatitude());

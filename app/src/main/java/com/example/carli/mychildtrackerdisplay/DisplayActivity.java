@@ -161,7 +161,6 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         if(!database.child("locations").equals(null) ){
             subscribeToUpdates();
         }
-
     }
 
     // makes sure the location is updates

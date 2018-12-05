@@ -1,5 +1,6 @@
 package com.example.carli.mychildtrackerdisplay;
 
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -11,6 +12,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import android.app.PendingIntent;
 import android.app.Service;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,12 +25,16 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import java.security.Timestamp;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class TrackerService extends Service {
 
     private static final String TAG = TrackerService.class.getSimpleName();
+    private ChildTracker tracker;
 
     @Override
     public IBinder onBind(Intent intent) {return null;}
@@ -37,6 +43,7 @@ public class TrackerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        tracker = new ChildTracker();
         requestLocationUpdates();
         buildNotification();
 
@@ -89,15 +96,13 @@ public class TrackerService extends Service {
                 @Override
                 public void onLocationResult(LocationResult locationResult) {
                     Location location = locationResult.getLastLocation();
-                    String time_id = getFormatTime(location.getTime());
-
-                    // write to database
-                    FirebaseDatabase.getInstance().getReference(user.getUid()).child("locations").child(time_id).setValue(location);
-
+                    tracker.setLocation(location);
                 }
             }, null);
         }
     }
+
+
 
     public String getFormatTime(long timeStamp){
         Date date = new Date(timeStamp);

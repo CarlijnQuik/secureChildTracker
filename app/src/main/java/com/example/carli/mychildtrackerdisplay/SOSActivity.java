@@ -34,14 +34,10 @@ public class SOSActivity extends AppCompatActivity {
         buttonSOS.setVisibility(View.INVISIBLE);
         tvSOS.setVisibility(View.VISIBLE);
 
-        buttonSOS.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SOSViewModel.setSOS(true);
-                buttonSOS.setVisibility(View.INVISIBLE);
-                tvSOS.setVisibility(View.VISIBLE);
-
-            }
+        buttonSOS.setOnClickListener(v -> {
+            SOSViewModel.setSOS(true);
+            buttonSOS.setVisibility(View.INVISIBLE);
+            tvSOS.setVisibility(View.VISIBLE);
         });
 
     }

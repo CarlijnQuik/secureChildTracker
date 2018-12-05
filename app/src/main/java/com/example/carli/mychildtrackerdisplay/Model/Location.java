@@ -20,12 +20,12 @@ public class Location implements Serializable {
     public float accuracy = 0;
 
 
-    public long getId_timestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setId_timestamp(long id_timestamp) {
-        this.timestamp = id_timestamp;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public double getLatitude() {
@@ -52,8 +52,8 @@ public class Location implements Serializable {
         this.accuracy = accuracy;
     }
 
-    public Location(long id_timestamp, double latitude, double longitude, float accuracy) {
-        this.timestamp = id_timestamp;
+    public Location(long timestamp, double latitude, double longitude, float accuracy) {
+        this.timestamp = timestamp;
         this.latitude = latitude;
         this.longitude = longitude;
         this.accuracy = accuracy;

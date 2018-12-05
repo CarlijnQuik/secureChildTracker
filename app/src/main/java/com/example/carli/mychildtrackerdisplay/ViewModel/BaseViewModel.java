@@ -29,8 +29,10 @@ private DatabaseReference database;
             if (user != null) {
                 database = FirebaseDatabase.getInstance().getReference(user.getUid());
             }
-            if (currentUser == null)
+            if (currentUser == null) {
+                currentUser = new MutableLiveData<>();
                 loadUserData();
+            }
         }
         catch (Exception e){
             Log.d(Constants.LOG_TAG, e.getMessage());
@@ -77,6 +79,17 @@ private DatabaseReference database;
     }
     public void setSOS(boolean val){
         database.child(Constants.DB_ENTRY_SOS).setValue(val);
+    }
+    public void addData(String val){
+        database.child(Constants.DB_ENTRY_DATA).push().setValue(val);
+    }
+
+    public void signOut(){
+        firebaseAuth.signOut();
+    }
+
+    public DatabaseReference getDatabase(){
+        return database;
     }
 
 }

@@ -4,7 +4,7 @@
     <string name="firebase_path" translatable="false">locations</string>
     <string name="firebase_email" translatable="false">carlijn@test.nl</string>
     <string name="firebase_password" translatable="false">123456</string>
-    <string name="app_name">My Child Tracker Display</string>
+    <string name="app_name">My Child Tracker</string>
 
     <string name="hint_user_id">User ID</string>
     <string name="sign_in">Log In</string>
@@ -59,4 +59,5 @@
 
     <string name="scanQR_canceled">Scanning was canceled by user. Please push the button above to scan the partner\'s code again.</string>
     <string name="pairing_success">Congratulations! Pairing successfully done.</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

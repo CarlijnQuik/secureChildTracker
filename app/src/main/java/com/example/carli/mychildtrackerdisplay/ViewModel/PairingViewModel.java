@@ -62,11 +62,11 @@ public class PairingViewModel extends BaseViewModel {
 
     public PairingViewModel(){
         try {
-            keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore = KeyStore.getInstance(Constants.KEYSTORE);
             keyStore.load(null);
         }
         catch (Exception e){
-            Log.d(Constants.LOG_TAG,"Error initiating AndroidKeyStore: "+e.getMessage());
+            Log.d(Constants.LOG_TAG,"Error initiating " + Constants.KEYSTORE + ": "+e.getMessage());
         }
     }
     private void saveKeyIntoKeystore(byte[] bytes){
@@ -220,8 +220,10 @@ public class PairingViewModel extends BaseViewModel {
             Log.d(Constants.LOG_TAG, "RECEIVED NONCE: "+noncey);
             Log.d(Constants.LOG_TAG, "Nonce received from DB: "+noncey.toString());
             Log.d(Constants.LOG_TAG, "Nonce saved: "+nonce2.toString());
-            if (noncey.equals(nonce2+1))
+            if (noncey.equals(nonce2+1)) {
+                setPartnerID(partnerID);
                 return true;
+            }
             else
                 return false;
         }

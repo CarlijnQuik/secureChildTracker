@@ -15,4 +15,5 @@ public final class Constants {
 
     public static final String KEY_ALIAS = "MyChildTrackerTecnicoKey";
     public static final String CIPHER_TYPE = "AES/GCM/NoPadding";
+    public static final String KEYSTORE = "AndroidKeyStore";
 }

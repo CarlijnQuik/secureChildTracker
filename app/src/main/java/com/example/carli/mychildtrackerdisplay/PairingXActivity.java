@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -75,6 +76,7 @@ public class PairingXActivity extends AppCompatActivity {
         scanQRbutton = findViewById(R.id.scanQRbutton);
         introductionText = findViewById(R.id.introductionText);
         displayQRimageview = findViewById(R.id.displayQRimageview);
+        Handler handler = new Handler();
 
         if (userType.equals(Constants.USERTYPE_CHILD)){
             switch (step){
@@ -96,9 +98,7 @@ public class PairingXActivity extends AppCompatActivity {
                     scanQRbutton.setVisibility(View.INVISIBLE);
                     showQRbutton.setVisibility(View.INVISIBLE);
 
-                    // go to the SOS activity
-                    Intent intent = new Intent(this, SOSActivity.class);
-                    startActivity(intent);
+                    handler.postDelayed(() -> redirectToNextActivity(), 2000);
                     break;
                 default:
                     introductionText.setText("Stepping error");
@@ -125,6 +125,7 @@ public class PairingXActivity extends AppCompatActivity {
                     showQRbutton.setVisibility(View.INVISIBLE);
                     introductionText.setText(R.string.pairing_success);
                     displayQRimageview.setImageResource(R.drawable.check);
+                    handler.postDelayed(() -> redirectToNextActivity(), 2000);
                     break;
                 default:
                     introductionText.setText("Stepping error");
@@ -135,6 +136,19 @@ public class PairingXActivity extends AppCompatActivity {
         }
     }
 
+    private void redirectToNextActivity(){
+        Intent intent;
+        if (userType.equals(Constants.USERTYPE_CHILD))
+            intent = new Intent(this, TrackerActivity.class);
+        else if (userType.equals(Constants.USERTYPE_PARENT))
+            intent = new Intent(this, DisplayXActivity.class);
+        else
+        {
+            Log.e(Constants.LOG_TAG, "Couldnt redirect to next activity, usertype missing");
+            return;
+        }
+            startActivity(intent);
+    }
 
 
     private void generateQRandWait(){

@@ -49,6 +49,7 @@
         </activity>
         <activity android:name=".LoginProgressDialog" />
         <activity android:name=".DisplayActivity" />
+        <activity android:name=".DisplayXActivity" />
         <activity android:name=".TrackerActivity" />
         <activity android:name=".PairingXActivity" />
 
@@ -57,7 +58,10 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".SOSActivity"></activity>
+        <activity android:name=".SOSActivity" />
+        <activity
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps"></activity>
     </application>
 
 </manifest>
