@@ -12,8 +12,10 @@ public final class Constants {
     public static final String DB_ENTRY_PARTNERID = "partnerID";
     public static final String DB_ENTRY_SOS = "sos";
     public static final String DB_ENTRY_DATA = "data";
+    public static final String DB_ENTRY_USERTYPE = "userType";
 
     public static final String KEY_ALIAS = "MyChildTrackerTecnicoKey";
     public static final String CIPHER_TYPE = "AES/GCM/NoPadding";
     public static final String KEYSTORE = "AndroidKeyStore";
+
 }

@@ -22,17 +22,22 @@ private FirebaseAuth firebaseAuth;
 private DatabaseReference database;
 
     public BaseViewModel() {
+        init();
+    }
+
+    public void init(){
         try {
             firebaseAuth = FirebaseAuth.getInstance();
-            if (user == null)
+            //if (user == null)
                 user = firebaseAuth.getCurrentUser();
             if (user != null) {
                 database = FirebaseDatabase.getInstance().getReference(user.getUid());
+                if (currentUser == null) {
+                    currentUser = new MutableLiveData<>();
+                    loadUserData();
+                }
             }
-            if (currentUser == null) {
-                currentUser = new MutableLiveData<>();
-                loadUserData();
-            }
+
         }
         catch (Exception e){
             Log.d(Constants.LOG_TAG, e.getMessage());
@@ -80,8 +85,9 @@ private DatabaseReference database;
     public void setSOS(boolean val){
         database.child(Constants.DB_ENTRY_SOS).setValue(val);
     }
-    public void addData(String val){
-        database.child(Constants.DB_ENTRY_DATA).push().setValue(val);
+
+    public void setUserType(String val){
+        database.child(Constants.DB_ENTRY_USERTYPE).setValue(val);
     }
 
     public void signOut(){
@@ -90,6 +96,10 @@ private DatabaseReference database;
 
     public DatabaseReference getDatabase(){
         return database;
+    }
+
+    public FirebaseAuth getFirebaseAuth(){
+        return firebaseAuth;
     }
 
 }

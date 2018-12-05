@@ -62,11 +62,13 @@ public class PairingXActivity extends AppCompatActivity {
         pairingViewModel.getCurrentUser().observe(this, new Observer<UserEntry>() {
             @Override
             public void onChanged(@Nullable UserEntry currentUser) {
-                pairingViewModel.getCurrentUser().removeObserver(this);     // remove from observer list, so it won't get called by every change
+                if (currentUser != null) {
+                    pairingViewModel.getCurrentUser().removeObserver(this);     // remove from observer list, so it won't get called by every change
 
-                Log.d(Constants.LOG_TAG, "onStart observer called");
-                userType = currentUser.getUserType();
-                initUI(pairingViewModel.getStep());
+                    Log.d(Constants.LOG_TAG, "onStart observer called");
+                    userType = currentUser.getUserType();
+                    initUI(pairingViewModel.getStep());
+                }
             }
         });
     }

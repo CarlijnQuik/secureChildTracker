@@ -3,6 +3,7 @@ package com.example.carli.mychildtrackerdisplay;
 import android.app.AlertDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -63,6 +64,10 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
         logOutButton.setOnClickListener(v -> {
             displayViewModel.signOut();
             Toast.makeText(this, R.string.signed_out, LENGTH_SHORT).show();
+            Intent intent = new Intent(this, LoginXActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
         });
     }
 
