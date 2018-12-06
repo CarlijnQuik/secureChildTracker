@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.carli.mychildtrackerdisplay.Model.Location;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -54,7 +55,8 @@ public class LocationAdapter extends BaseAdapter {
 
             // set textview to show achievement name
             if (location.getTimestamp() != Double.MIN_VALUE) {
-                tvTimestamp.setText(""+location.getTimestamp());
+                SimpleDateFormat s = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+                tvTimestamp.setText(s.format(location.getTimestamp()));
             }
             if (location.getLatitude() != Double.MIN_VALUE) {
                 tvLatitude.setText(""+location.getLatitude());
