@@ -24,24 +24,16 @@
         android:id="@+id/bLogOut"
         android:layout_width="130dp"
         android:layout_height="54dp"
-        android:layout_marginTop="550dp"
         android:layout_marginStart="250dp"
-        android:text="Sign Out" />
-
-    <Button
-        android:id="@+id/pairPhoneWithChild"
-        android:layout_width="130dp"
-        android:layout_height="54dp"
         android:layout_marginTop="550dp"
-        android:layout_marginStart="50dp"
-        android:text="Pair phone with child" />
+        android:text="@string/sign_out" />
 
     <ListView
+        android:id="@+id/locationListView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="300dp"
-        android:id="@+id/listView1" />
+        android:layout_marginTop="300dp" />
 
 
 </RelativeLayout>

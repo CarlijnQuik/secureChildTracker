@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.carli.mychildtrackerdisplay.Model.Location;
@@ -24,22 +25,28 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class DisplayXActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private DisplayViewModel displayViewModel;
+    private ArrayList<Location> locationList = new ArrayList<>();
     private HashMap<String, Marker> mMarkers = new HashMap<>();
     private GoogleMap mMap;
     private Marker nowMarker;
     private Circle nowCircle;
+    private LocationAdapter locationAdapter;
 
     AlertDialog.Builder builder;
     Location location;
     Button pairButton;
     Button logOutButton;
+    ListView locationListView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,13 +54,13 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
         displayViewModel = ViewModelProviders.of(this).get(DisplayViewModel.class);
 
         // define view
-        pairButton = (Button) findViewById(R.id.pairPhoneWithChild);
         logOutButton = (Button) findViewById(R.id.bLogOut);
-
-
+        locationAdapter = new LocationAdapter(this, locationList);
+        locationListView = (ListView) findViewById(R.id.locationListView);
+        locationListView.setAdapter(locationAdapter);
         // initialize buttons and adapter
         initializeButtons();
-       // initializeAdapter();
+        // initializeAdapter();
         // initialize the map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -87,6 +94,10 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
             @Override
             public void onChanged(@Nullable Location currentLocation) {
                 Log.d(Constants.LOG_TAG,"Received new location: "+currentLocation.getLatitude()+"/"+currentLocation.getLongitude());
+                locationList.add(0, currentLocation);
+                if (locationList.size()>20)
+                    locationList.remove(20);
+                locationAdapter.notifyDataSetChanged();
                 setMarker(currentLocation);
             }
         });

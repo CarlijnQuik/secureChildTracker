@@ -29,6 +29,7 @@ public class DisplayViewModel extends BaseViewModel {
     private MutableLiveData<Location> currentLocation;
     private KeyStore keyStore = null;
     private String partnerID;
+    private long lastTimestamp = 0;
 
     public DisplayViewModel(){
         try {
@@ -65,7 +66,7 @@ public class DisplayViewModel extends BaseViewModel {
             Log.d(Constants.LOG_TAG, "parnerID in DisplayViewModel null.");
             return;
         }
-        FirebaseDatabase.getInstance().getReference(partnerID).child(Constants.DB_ENTRY_DATA).addChildEventListener(new ChildEventListener() {
+        FirebaseDatabase.getInstance().getReference(partnerID).child(Constants.DB_ENTRY_DATA).limitToLast(20).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Cipher cipher = null;
@@ -88,7 +89,10 @@ public class DisplayViewModel extends BaseViewModel {
                     String json = new String(bytes);
                     ObjectMapper objectMapper = new ObjectMapper();
                     Location location = objectMapper.readValue(json, Location.class);
-                    currentLocation.setValue(location);
+                    if (location.getTimestamp()>getLastTimestamp()){
+                        setLastTimestamp(location.getTimestamp());
+                        currentLocation.setValue(location);
+                    }
                 }
                 catch (Exception e){
                     Log.d(Constants.LOG_TAG,"Error decrypting location: "+e.getMessage());
@@ -120,6 +124,14 @@ public class DisplayViewModel extends BaseViewModel {
         if (currentLocation == null)
             currentLocation = new MutableLiveData<>();
         return currentLocation;
+    }
+
+    private long getLastTimestamp(){
+        return this.lastTimestamp;
+    }
+
+    private void setLastTimestamp(long val){
+        this.lastTimestamp = val;
     }
 
 }

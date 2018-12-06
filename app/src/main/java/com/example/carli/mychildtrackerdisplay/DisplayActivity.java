@@ -74,7 +74,7 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
         editor = sharedPref.edit();
 
         // define view
-        pairButton = (Button) findViewById(R.id.pairPhoneWithChild);
+        //pairButton = (Button) findViewById(R.id.pairPhoneWithChild);
         logOutButton = (Button) findViewById(R.id.bLogOut);
 
 
@@ -103,7 +103,7 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
     public void initializeAdapter(){
         // set the list adapter
         locations = new ArrayList<>();
-        listOfLocations = (ListView) findViewById(R.id.listView1);
+        listOfLocations = (ListView) findViewById(R.id.locationListView);
         locationAdapter = new LocationAdapter(this, locations);
         listOfLocations.setAdapter(locationAdapter);
     }
