@@ -134,4 +134,24 @@ public class DisplayViewModel extends BaseViewModel {
         this.lastTimestamp = val;
     }
 
+    public boolean setInterval(Integer val){
+        if (partnerID == null)
+        {
+            Log.d(Constants.LOG_TAG, "parnerID in DisplayViewModel null.");
+            return false;
+        }
+        if ((val!=0 && val<2000) || val>3600000) {
+            Log.d(Constants.LOG_TAG, "Interval Value " + val + " out of bounds.");
+            return false;
+        }
+        try {
+            FirebaseDatabase.getInstance().getReference(partnerID).child(Constants.DB_ENTRY_INTERVAL).setValue(val);
+            return true;
+        }
+        catch (Exception e){
+            Log.d(Constants.LOG_TAG, "Error setting interval value "+e.getMessage());
+            return false;
+        }
+    }
+
 }
