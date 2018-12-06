@@ -115,8 +115,7 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 String interval = (String) parent.getAdapter().getItem(position);
-                Log.d("click", interval);
-                String[] intervalSplit = interval.split(" ");
+                String[] intervalSplit = interval.split("\\s+");
                 interval = intervalSplit[0];
                 if(intervalSplit[1].equals("s")) displayViewModel.setInterval(Integer.decode(interval)*1000);
                 if(intervalSplit[1].equals("min")) displayViewModel.setInterval(Integer.decode(interval)*1000*60);

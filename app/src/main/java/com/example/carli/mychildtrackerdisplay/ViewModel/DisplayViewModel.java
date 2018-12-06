@@ -145,6 +145,7 @@ public class DisplayViewModel extends BaseViewModel {
             return false;
         }
         try {
+            Log.d(Constants.LOG_TAG, "Setting the interval value to " + val);
             FirebaseDatabase.getInstance().getReference(partnerID).child(Constants.DB_ENTRY_INTERVAL).setValue(val);
             return true;
         }
