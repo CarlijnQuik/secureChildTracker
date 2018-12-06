@@ -42,16 +42,22 @@ public class LocationAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.location_item_list, null);
         }
 
-        // iterate over the items in achievement arraylist
-        Location location = locations.get(position);
-
         if (locations != null) {
+
+            // iterate over the items in achievement arraylist
+            Location location = locations.get(position);
 
             // initialize layout components for the listitem
             TextView tvTimestamp = (TextView) convertView.findViewById(R.id.tvTimestamp);
             TextView tvLatitude = (TextView) convertView.findViewById(R.id.tvLatitude);
-            ImageView ivImage = (ImageView) convertView.findViewById(R.id.ivImage);
             TextView tvLongitude = (TextView) convertView.findViewById(R.id.tvLongitude);
+
+            ImageView ivImage = (ImageView) convertView.findViewById(R.id.ivImage);
+            ivImage.setImageResource(R.drawable.blue_marker);
+
+            if(location == locations.get(0)){
+                ivImage.setImageResource(R.drawable.location);
+            }
 
             // set textview to show achievement name
             if (location.getTimestamp() != Double.MIN_VALUE) {
