@@ -4,7 +4,7 @@
     <string name="firebase_path" translatable="false">locations</string>
     <string name="firebase_email" translatable="false">carlijn@test.nl</string>
     <string name="firebase_password" translatable="false">123456</string>
-    <string name="app_name">My Child Tracker</string>
+    <string name="app_name">Secure Child Tracker</string>
 
     <string name="hint_user_id">User ID</string>
     <string name="sign_in">Log In</string>
@@ -18,7 +18,6 @@
     <string name="emailpassword_status_fmt">Email User: %s</string>
     <string name="firebase_status_fmt">Firebase User: %s</string>
     <string name="loading">Loading…</string>
-    <string name="required">Required</string>
 
     <string name="welcome">Welcome to the My Child Tracker App!</string>
     <string name="welcome_home">Choose what you want to do...</string>
@@ -42,10 +41,8 @@
 
     <string name="empty_list">Your list is empty</string>
 
-    <string name="parent">Parent</string>
-    <string name="child">Child</string>
     <string name="log_out_question">Are you sure you want to log out?</string>
-    <string name="parent_or_child">Are you a parent or child?</string>
+    <string name="child_or_parent">Are you a parent?</string>
     <string name="title_activity_navigation">NavigationActivity</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
@@ -62,5 +59,4 @@
 
     <string name="scanQR_canceled">Scanning was canceled by user. Please push the button above to scan the partner\'s code again.</string>
     <string name="pairing_success">Congratulations! Pairing successfully done.</string>
-    <string name="title_activity_maps">Map</string>
 </resources>
