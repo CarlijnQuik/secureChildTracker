@@ -12,6 +12,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import android.app.PendingIntent;
 import android.app.Service;
+import android.arch.lifecycle.LifecycleService;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,6 +23,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.Manifest;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -31,23 +34,25 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class TrackerService extends Service {
+public class TrackerService extends LifecycleService {
 
     private static final String TAG = TrackerService.class.getSimpleName();
     private ChildTracker tracker;
-
-    @Override
-    public IBinder onBind(Intent intent) {return null;}
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseUser user;
+    FusedLocationProviderClient client;
+    LocationRequest request;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        user = FirebaseAuth.getInstance().getCurrentUser();
         tracker = new ChildTracker();
-        requestLocationUpdates();
+        requestLocationAndIntervalUpdates();
         buildNotification();
 
     }
+
+
 
     private void buildNotification() {
         String stop = "stop";
@@ -76,22 +81,24 @@ public class TrackerService extends Service {
             unregisterReceiver(stopReceiver);
             stopSelf();
 
-            signOut();
 
         }
     };
 
-    private void requestLocationUpdates() {
-        LocationRequest request = new LocationRequest();
+    private void requestLocationAndIntervalUpdates() {
+        request = LocationRequest.create();
         request.setInterval(10000);
-        request.setFastestInterval(5000);
+        request.setFastestInterval(3000);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
+
+        client = LocationServices.getFusedLocationProviderClient(this);
+        requestIntervalUpdates(request);
+    }
+
+    private void requestLocationUpdate(){
         int permission = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
         if (permission == PackageManager.PERMISSION_GRANTED) {
-            // Request location updates and when an update is
-            // received, store the location in Firebase
             client.requestLocationUpdates(request, new LocationCallback() {
                 @Override
                 public void onLocationResult(LocationResult locationResult) {
@@ -100,6 +107,21 @@ public class TrackerService extends Service {
                 }
             }, null);
         }
+    }
+
+
+    private void requestIntervalUpdates(LocationRequest request) {
+        tracker.getInterval().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer intval) {
+                if (intval != null) {
+                    request.setInterval(intval);
+                    request.setFastestInterval(intval/2);
+                    Log.d(Constants.LOG_TAG, "Interval changed to: "+intval);
+                }
+                requestLocationUpdate();
+            }
+        });
     }
 
 
@@ -114,11 +136,6 @@ public class TrackerService extends Service {
 
     }
 
-    private void signOut(){
-        Intent intent=new Intent(this,LoginActivity.class);
-        startActivity(intent);
-
-    };
 
 
 }

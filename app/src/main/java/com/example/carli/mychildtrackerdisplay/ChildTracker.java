@@ -1,5 +1,7 @@
 package com.example.carli.mychildtrackerdisplay;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.util.Base64;
 import android.util.Log;
 
@@ -7,8 +9,11 @@ import com.example.carli.mychildtrackerdisplay.Model.Location;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.nio.ByteBuffer;
 import java.security.KeyStore;
@@ -22,6 +27,8 @@ public class ChildTracker {
     private DatabaseReference database;
 
     private KeyStore keyStore = null;
+    private MutableLiveData<Integer> interval;
+    private MutableLiveData<Boolean> unpair;
 
 
     public ChildTracker(){
@@ -31,6 +38,7 @@ public class ChildTracker {
                 user = firebaseAuth.getCurrentUser();
             if (user != null) {
                 database = FirebaseDatabase.getInstance().getReference(user.getUid());
+                loadInterval();
             }
         }
         catch (Exception e){
@@ -87,5 +95,30 @@ public class ChildTracker {
     private void addData(String val){
         database.child(Constants.DB_ENTRY_DATA).push().setValue(val);
     }
+
+    public void loadInterval(){
+        database.child(Constants.DB_ENTRY_INTERVAL).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Integer intval = dataSnapshot.getValue(Integer.class);
+                if (intval != null)
+                    interval.setValue(intval);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    public LiveData<Integer> getInterval(){
+        if (interval == null)
+            interval = new MutableLiveData<>();
+        return interval;
+    }
+
+
 
 }
