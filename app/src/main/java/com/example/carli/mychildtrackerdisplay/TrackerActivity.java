@@ -82,11 +82,11 @@ public class TrackerActivity extends AppCompatActivity {
 
         // textView
         tvSOS = findViewById(R.id.tvSOS);
-        tvSOS.setVisibility(View.VISIBLE);
+        tvSOS.setVisibility(View.INVISIBLE);
 
         //SOS button
-        buttonSOS = findViewById(R.id.SOSButton);
-        buttonSOS.setVisibility(View.INVISIBLE);
+        buttonSOS = findViewById(R.id.bSOS);
+        buttonSOS.setVisibility(View.VISIBLE);
         buttonSOS.setOnClickListener(v -> {
             SOSViewModel.setSOS(true);
             buttonSOS.setVisibility(View.INVISIBLE);

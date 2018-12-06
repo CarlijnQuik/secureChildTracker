@@ -148,7 +148,7 @@ public class LoginXActivity extends AppCompatActivity {
 
         String email = etEmail.getText().toString();
         if (TextUtils.isEmpty(email)) {
-            etEmail.setError(""+R.string.required);
+            etEmail.setError("Required");
             valid = false;
         } else {
             etEmail.setError(null);
@@ -156,7 +156,7 @@ public class LoginXActivity extends AppCompatActivity {
 
         String password = etPassword.getText().toString();
         if (TextUtils.isEmpty(password)) {
-            etPassword.setError(""+R.string.required);
+            etPassword.setError("Required");
             valid = false;
 
         } else {

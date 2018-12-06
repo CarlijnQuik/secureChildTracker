@@ -11,8 +11,10 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.carli.mychildtrackerdisplay.Model.Location;
@@ -64,11 +66,26 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
         // initialize buttons and adapter
         initializeButtons();
         initializeAdapter();
+        initializeDropdown();
 
         // initialize the map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    public void initializeButtons(){
+        // decide what clicking the logout button does
+        logOutButton = findViewById(R.id.bLogOut);
+        logOutButton.setOnClickListener(v -> {
+            displayViewModel.signOut();
+            Toast.makeText(this, R.string.signed_out, LENGTH_SHORT).show();
+            Intent intent = new Intent(this, LoginXActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+
     }
 
     public void initializeAdapter(){
@@ -85,17 +102,33 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
 
     }
 
-    public void initializeButtons(){
-        // decide what clicking the logout button does
-        logOutButton = findViewById(R.id.bLogOut);
-        logOutButton.setOnClickListener(v -> {
-            displayViewModel.signOut();
-            Toast.makeText(this, R.string.signed_out, LENGTH_SHORT).show();
-            Intent intent = new Intent(this, LoginXActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
+    public void initializeDropdown(){
+        // set the drop down view
+        Spinner dropdown = findViewById(R.id.dropdownInterval);
+        String[] intervals = new String[]{"10 s", "30 s", "1 min", "5 min", "15 min", "30 min", "1 hour"};
+        ArrayAdapter<String> intervalAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, intervals);
+
+        //set the spinners adapter to the previously created one
+        dropdown.setAdapter(intervalAdapter);
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                String interval = (String) parent.getAdapter().getItem(position);
+                Log.d("click", interval);
+                String[] intervalSplit = interval.split(" ");
+                interval = intervalSplit[0];
+                if(intervalSplit[1].equals("s")) displayViewModel.setInterval(Integer.decode(interval)*1000);
+                if(intervalSplit[1].equals("min")) displayViewModel.setInterval(Integer.decode(interval)*1000*60);
+                if(intervalSplit[1].equals("hour")) displayViewModel.setInterval(Integer.decode(interval)*1000*3600);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // do nothing
+            }
         });
+
     }
 
     @Override
