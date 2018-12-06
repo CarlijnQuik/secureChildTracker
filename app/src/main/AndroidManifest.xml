@@ -53,7 +53,6 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".SOSActivity" />
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"></activity>
