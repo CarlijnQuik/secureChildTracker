@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -19,12 +21,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.zxing.common.BitMatrix;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,11 +45,13 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
     private GoogleMap mMap;
     private Marker nowMarker;
     private Circle nowCircle;
+    private Marker clickedMarker;
+    private Circle clickedCircle;
+
     private LocationAdapter locationAdapter;
 
     AlertDialog.Builder builder;
     Location location;
-    Button pairButton;
     Button logOutButton;
     ListView locationListView;
 
@@ -53,21 +61,33 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
         setContentView(R.layout.activity_display);
         displayViewModel = ViewModelProviders.of(this).get(DisplayViewModel.class);
 
-        // define view
-        logOutButton = (Button) findViewById(R.id.bLogOut);
-        locationAdapter = new LocationAdapter(this, locationList);
-        locationListView = (ListView) findViewById(R.id.locationListView);
-        locationListView.setAdapter(locationAdapter);
         // initialize buttons and adapter
         initializeButtons();
-        // initializeAdapter();
+        initializeAdapter();
+
         // initialize the map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
+
+    public void initializeAdapter(){
+        locationAdapter = new LocationAdapter(this, locationList);
+        locationListView = findViewById(R.id.locationListView);
+        locationListView.setAdapter(locationAdapter);
+
+        locationListView.setOnItemClickListener((parent, view, position, id) -> {
+            Location clickedLocation = (Location) parent.getAdapter().getItem(position);
+            SimpleDateFormat s = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+            setClickedMarker(clickedLocation, Color.BLUE, BitmapDescriptorFactory.HUE_BLUE, s.format(clickedLocation.getTimestamp()));
+
+        });
+
+    }
+
     public void initializeButtons(){
         // decide what clicking the logout button does
+        logOutButton = findViewById(R.id.bLogOut);
         logOutButton.setOnClickListener(v -> {
             displayViewModel.signOut();
             Toast.makeText(this, R.string.signed_out, LENGTH_SHORT).show();
@@ -98,12 +118,12 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
                 if (locationList.size()>20)
                     locationList.remove(20);
                 locationAdapter.notifyDataSetChanged();
-                setMarker(currentLocation);
+                setNowMarker(currentLocation, Color.RED, BitmapDescriptorFactory.HUE_RED, "Current location");
             }
         });
     }
 
-    private void setMarker(Location currentLocation) {
+    private void setNowMarker(Location currentLocation, int circleColor, float markerColor, String markerTitle){
         boolean first = true;
         if (nowMarker != null) {
             nowMarker.remove();
@@ -113,16 +133,38 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
             nowCircle.remove();
 
         LatLng latLong = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        nowMarker = mMap.addMarker(new MarkerOptions().title("Current position").position(latLong));
-        nowCircle = mMap.addCircle(new CircleOptions().center(latLong).radius(currentLocation.accuracy).strokeColor(Color.RED));
-        if (first)
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLong, 15.0f));
-        else
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLong));
+        nowMarker = mMap.addMarker(new MarkerOptions().title(markerTitle).position(latLong).icon(BitmapDescriptorFactory.defaultMarker(markerColor)));
+        nowCircle = mMap.addCircle(new CircleOptions().center(latLong).radius(currentLocation.accuracy).strokeColor(circleColor));
+        mMarkers.put(markerTitle, nowMarker);
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (Marker marker : mMarkers.values()) {
+            builder.include(marker.getPosition());
+        }
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 300));
 
     }
 
+    private void setClickedMarker(Location currentLocation, int circleColor, float markerColor, String markerTitle){
+        boolean first = true;
+        if (clickedMarker != null) {
+            clickedMarker.remove();
+            first = false;
+        }
+        if (clickedCircle != null)
+            clickedCircle.remove();
 
+        LatLng latLong = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        clickedMarker = mMap.addMarker(new MarkerOptions().title(markerTitle).position(latLong).icon(BitmapDescriptorFactory.defaultMarker(markerColor)));
+        clickedCircle = mMap.addCircle(new CircleOptions().center(latLong).radius(currentLocation.accuracy).strokeColor(circleColor));
+        mMarkers.put(markerTitle, clickedMarker);
 
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (Marker marker : mMarkers.values()) {
+            builder.include(marker.getPosition());
+        }
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 300));
+
+    }
 
 }

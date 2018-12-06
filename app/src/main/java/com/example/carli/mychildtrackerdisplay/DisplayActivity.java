@@ -258,8 +258,6 @@ public class DisplayActivity extends FragmentActivity implements OnMapReadyCallb
                 .setSmallIcon(R.drawable.ic_stat_name);
         builder.build();
 
-
-
     }
 
 }
