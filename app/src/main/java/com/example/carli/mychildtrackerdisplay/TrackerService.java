@@ -41,12 +41,21 @@ public class TrackerService extends LifecycleService {
     FirebaseUser user;
     FusedLocationProviderClient client;
     LocationRequest request;
+    LocationCallback locationCallback;
 
     @Override
     public void onCreate() {
         super.onCreate();
         user = FirebaseAuth.getInstance().getCurrentUser();
         tracker = new ChildTracker();
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                Location location = locationResult.getLastLocation();
+                tracker.setLocation(location);
+            }
+        };
+
         requestLocationAndIntervalUpdates();
         buildNotification();
 
@@ -91,33 +100,39 @@ public class TrackerService extends LifecycleService {
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         client = LocationServices.getFusedLocationProviderClient(this);
-        requestLocationUpdate();
+        requestIntervalUpdates();
     }
 
     private void requestLocationUpdate(){
+        Log.d(Constants.LOG_TAG,"requestLocationUpdate called");
         int permission = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
         if (permission == PackageManager.PERMISSION_GRANTED) {
-            client.requestLocationUpdates(request, new LocationCallback() {
-                @Override
-                public void onLocationResult(LocationResult locationResult) {
-                    Location location = locationResult.getLastLocation();
-                    tracker.setLocation(location);
-                }
-            }, null);
-            requestIntervalUpdates(request);
+            client.requestLocationUpdates(request, locationCallback, null);
+
         }
     }
 
 
-    private void requestIntervalUpdates(LocationRequest request) {
+    private void requestIntervalUpdates() {
         tracker.getInterval().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer intval) {
+                Log.d(Constants.LOG_TAG, "Interval onChange called."+intval);
                 if (intval != null) {
-                    request.setInterval(intval);
-                    request.setFastestInterval(intval/2);
-                    Log.d(Constants.LOG_TAG, "Interval changed to: "+intval);
+                    if (intval.equals(0)){
+                        client.removeLocationUpdates(locationCallback);
+                        Log.d(Constants.LOG_TAG, "Location Updates stopped by parent");
+                    }
+                    else {
+                        request.setInterval(intval);
+                        request.setFastestInterval(intval);
+                        Log.d(Constants.LOG_TAG, "Interval changed to: " + intval);
+                        requestLocationUpdate();
+                    }
+                }
+                else{
+                    requestLocationUpdate();
                 }
             }
         });

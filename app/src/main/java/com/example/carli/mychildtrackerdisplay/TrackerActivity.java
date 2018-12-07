@@ -49,7 +49,6 @@ public class TrackerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracker);
         SOSViewModel = ViewModelProviders.of(this).get(SOSViewModel.class);
-        displayViewModel = ViewModelProviders.of(this).get(DisplayViewModel.class);
 
         // initialize Firebase
         user =  FirebaseAuth.getInstance().getCurrentUser();
@@ -95,29 +94,22 @@ public class TrackerActivity extends AppCompatActivity {
 
         // log out button
         logOutButton = findViewById(R.id.childLogOut);
-        logOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                displayViewModel.signOut();
-                goToLogInAcivity();
-
-            }
+        logOutButton.setOnClickListener(v -> {
+            SOSViewModel.signOut();
+            goToLogInActivity();
         });
 
     }
 
-    public void goToLogInAcivity(){
+    public void goToLogInActivity(){
         Toast.makeText(this, R.string.signed_out, LENGTH_SHORT).show();
         Intent intent = new Intent(this, LoginXActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
+
     }
 
-    public void goToPairingActivity(){
-        Intent intent = new Intent(this, PairingXActivity.class);
-        startActivity(intent);
-    }
 
     @Override
     protected void onPause() {

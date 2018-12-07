@@ -101,8 +101,8 @@ public class ChildTracker {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Integer intval = dataSnapshot.getValue(Integer.class);
-                if (intval != null)
-                    interval.setValue(intval);
+                //if (intval != null)
+                interval.setValue(intval);
             }
 
             @Override
