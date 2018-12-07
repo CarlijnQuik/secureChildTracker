@@ -53,7 +53,6 @@ public class TrackerService extends LifecycleService {
     }
 
 
-
     private void buildNotification() {
         String stop = "stop";
         registerReceiver(stopReceiver, new IntentFilter(stop));
@@ -92,7 +91,7 @@ public class TrackerService extends LifecycleService {
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         client = LocationServices.getFusedLocationProviderClient(this);
-        requestIntervalUpdates(request);
+        requestLocationUpdate();
     }
 
     private void requestLocationUpdate(){
@@ -106,6 +105,7 @@ public class TrackerService extends LifecycleService {
                     tracker.setLocation(location);
                 }
             }, null);
+            requestIntervalUpdates(request);
         }
     }
 
@@ -119,7 +119,6 @@ public class TrackerService extends LifecycleService {
                     request.setFastestInterval(intval/2);
                     Log.d(Constants.LOG_TAG, "Interval changed to: "+intval);
                 }
-                requestLocationUpdate();
             }
         });
     }
