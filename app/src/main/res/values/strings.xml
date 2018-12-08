@@ -8,6 +8,7 @@
     <string name="sign_in">Log In</string>
     <string name="create_account">Create Account</string>
     <string name="sign_out">Log Out</string>
+
     <string name="signed_out">Logged Out</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
@@ -57,6 +58,10 @@
 
     <string name="pairing_parent_1">1. Push the button above to scan your child\'s QR code.</string>
     <string name="pairing_parent_2">2. Now push the button above to display your QR code.</string>
+    <string name="unpair">Unpair</string>
+
+    <string name="dismiss">Dismiss</string>
+    <string name="sos_alert">Your child pushed the SOS button!</string>
 
     <string name="scanQR_canceled">Scanning was canceled by user. Please push the button above to scan the partner\'s code again.</string>
     <string name="pairing_success">Congratulations! Pairing successfully done.</string>

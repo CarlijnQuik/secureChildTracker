@@ -1,4 +1,4 @@
-package com.example.carli.mychildtrackerdisplay;
+package com.example.carli.mychildtrackerdisplay.Utils;
 
 
 import android.app.Activity;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 
 import com.example.carli.mychildtrackerdisplay.Model.Location;
+import com.example.carli.mychildtrackerdisplay.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

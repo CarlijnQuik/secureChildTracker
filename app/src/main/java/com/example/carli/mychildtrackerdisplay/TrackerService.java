@@ -1,6 +1,6 @@
 package com.example.carli.mychildtrackerdisplay;
 
-import com.google.android.gms.analytics.Tracker;
+import com.example.carli.mychildtrackerdisplay.Utils.Constants;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -8,13 +8,10 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 
 import android.app.PendingIntent;
-import android.app.Service;
 import android.arch.lifecycle.LifecycleService;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,17 +19,13 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.Manifest;
-import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import java.security.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 public class TrackerService extends LifecycleService {
 
@@ -123,6 +116,10 @@ public class TrackerService extends LifecycleService {
                     if (intval.equals(0)){
                         client.removeLocationUpdates(locationCallback);
                         Log.d(Constants.LOG_TAG, "Location Updates stopped by parent");
+                    }
+                    else if (intval.equals(Constants.SOS_INTERVAL)){
+                        client.removeLocationUpdates(locationCallback);
+                        stopSelf();
                     }
                     else {
                         request.setInterval(intval);

@@ -6,6 +6,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.example.carli.mychildtrackerdisplay.Model.Location;
+import com.example.carli.mychildtrackerdisplay.Utils.Constants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,7 +29,6 @@ public class ChildTracker {
 
     private KeyStore keyStore = null;
     private MutableLiveData<Integer> interval;
-    private MutableLiveData<Boolean> unpair;
 
 
     public ChildTracker(){
@@ -102,6 +102,10 @@ public class ChildTracker {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Integer intval = dataSnapshot.getValue(Integer.class);
                 //if (intval != null)
+                if (intval != null && intval.equals(Constants.SOS_INTERVAL)){
+                    database.child(Constants.DB_ENTRY_INTERVAL).removeEventListener(this);
+                    unPair();
+                }
                 interval.setValue(intval);
             }
 
@@ -110,6 +114,19 @@ public class ChildTracker {
 
             }
         });
+    }
+
+    private void unPair() {
+        try {
+            keyStore.deleteEntry(Constants.KEY_ALIAS);
+            database.removeValue();
+            database.child(Constants.DB_ENTRY_USERTYPE).setValue(Constants.USERTYPE_CHILD);
+            firebaseAuth.signOut();
+        }
+        catch (Exception e){
+            Log.d(Constants.LOG_TAG, "Unable to unpair device. Error: "+e.getMessage());
+        }
+
     }
 
 

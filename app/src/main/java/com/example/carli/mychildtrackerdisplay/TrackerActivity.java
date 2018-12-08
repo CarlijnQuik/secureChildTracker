@@ -1,8 +1,6 @@
 package com.example.carli.mychildtrackerdisplay;
 
 import android.Manifest;
-import android.app.Activity;
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,27 +16,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.carli.mychildtrackerdisplay.ViewModel.DisplayViewModel;
-import com.example.carli.mychildtrackerdisplay.ViewModel.SOSViewModel;
+import com.example.carli.mychildtrackerdisplay.ViewModel.TrackerViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import javax.xml.transform.Result;
-
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class TrackerActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST = 1;
-    private static final String TAG = TrackerService.class.getSimpleName();
-    FirebaseUser user;
-    DatabaseReference database;
 
-    private com.example.carli.mychildtrackerdisplay.ViewModel.SOSViewModel SOSViewModel;
-    private DisplayViewModel displayViewModel;
+    private TrackerViewModel TrackerViewModel;
     ImageView buttonSOS;
     Button logOutButton;
     TextView tvSOS;
@@ -48,11 +37,7 @@ public class TrackerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracker);
-        SOSViewModel = ViewModelProviders.of(this).get(SOSViewModel.class);
-
-        // initialize Firebase
-        user =  FirebaseAuth.getInstance().getCurrentUser();
-        database = FirebaseDatabase.getInstance().getReference(user.getUid());
+        TrackerViewModel = ViewModelProviders.of(this).get(TrackerViewModel.class);
 
         initializeUI();
 
@@ -87,7 +72,7 @@ public class TrackerActivity extends AppCompatActivity {
         buttonSOS = findViewById(R.id.bSOS);
         buttonSOS.setVisibility(View.VISIBLE);
         buttonSOS.setOnClickListener(v -> {
-            SOSViewModel.setSOS(true);
+            TrackerViewModel.setSOS(true);
             buttonSOS.setVisibility(View.INVISIBLE);
             tvSOS.setVisibility(View.VISIBLE);
         });
@@ -95,7 +80,7 @@ public class TrackerActivity extends AppCompatActivity {
         // log out button
         logOutButton = findViewById(R.id.childLogOut);
         logOutButton.setOnClickListener(v -> {
-            SOSViewModel.signOut();
+            TrackerViewModel.signOut();
             goToLogInActivity();
         });
 

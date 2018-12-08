@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 
-import com.example.carli.mychildtrackerdisplay.Constants;
+import com.example.carli.mychildtrackerdisplay.Utils.Constants;
 import com.example.carli.mychildtrackerdisplay.Model.UserEntry;
 import com.example.carli.mychildtrackerdisplay.Repository.FirebaseDatabaseRepository;
 import com.google.firebase.auth.FirebaseAuth;
@@ -61,7 +61,7 @@ private DatabaseReference database;
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d(Constants.LOG_TAG, "Error getting userType from database.");
+                Log.d(Constants.LOG_TAG, "Error getting userData from database. "+ databaseError.getMessage());
             }
         });
     }
@@ -88,6 +88,8 @@ private DatabaseReference database;
 
     public void setUserType(String val){
         database.child(Constants.DB_ENTRY_USERTYPE).setValue(val);
+        if (val.equals(Constants.USERTYPE_CHILD))
+            setSecurityCheck(new String());
     }
 
     public void signOut(){

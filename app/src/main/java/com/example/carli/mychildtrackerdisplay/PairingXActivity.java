@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.carli.mychildtrackerdisplay.Model.UserEntry;
+import com.example.carli.mychildtrackerdisplay.Utils.Constants;
 import com.example.carli.mychildtrackerdisplay.ViewModel.PairingViewModel;
 
 import com.google.zxing.Result;

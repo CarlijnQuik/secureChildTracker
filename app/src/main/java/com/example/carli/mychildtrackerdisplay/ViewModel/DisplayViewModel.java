@@ -2,14 +2,11 @@ package com.example.carli.mychildtrackerdisplay.ViewModel;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
-import android.support.annotation.Nullable;
 import android.util.Base64;
 import android.util.Log;
 
-import com.example.carli.mychildtrackerdisplay.Constants;
+import com.example.carli.mychildtrackerdisplay.Utils.Constants;
 import com.example.carli.mychildtrackerdisplay.Model.Location;
-import com.example.carli.mychildtrackerdisplay.Model.UserEntry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -19,7 +16,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.nio.ByteBuffer;
 import java.security.KeyStore;
-import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -27,6 +23,7 @@ import javax.crypto.spec.GCMParameterSpec;
 
 public class DisplayViewModel extends BaseViewModel {
     private MutableLiveData<Location> currentLocation;
+    private MutableLiveData<Boolean> sos;
     private KeyStore keyStore = null;
     private String partnerID;
     private long lastTimestamp = 0;
@@ -47,6 +44,7 @@ public class DisplayViewModel extends BaseViewModel {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 partnerID = dataSnapshot.getValue(String.class);
                 loadLocations();
+                loadSOS();
             }
 
             @Override
@@ -58,6 +56,25 @@ public class DisplayViewModel extends BaseViewModel {
 
     }
 
+    private void loadSOS() {
+        if (partnerID == null)
+        {
+            Log.d(Constants.LOG_TAG, "parnerID in DisplayViewModel null.");
+            return;
+        }
+        FirebaseDatabase.getInstance().getReference(partnerID).child(Constants.DB_ENTRY_SOS).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                    sos.setValue(dataSnapshot.getValue(Boolean.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 
 
     public void loadLocations(){
@@ -125,6 +142,11 @@ public class DisplayViewModel extends BaseViewModel {
             currentLocation = new MutableLiveData<>();
         return currentLocation;
     }
+    public LiveData<Boolean> getSOS(){
+        if (sos == null)
+            sos = new MutableLiveData<>();
+        return sos;
+    }
 
     private long getLastTimestamp(){
         return this.lastTimestamp;
@@ -140,7 +162,7 @@ public class DisplayViewModel extends BaseViewModel {
             Log.d(Constants.LOG_TAG, "parnerID in DisplayViewModel null.");
             return false;
         }
-        if ((val!=0 && val<2000) || val>3600000) {
+        if ((val!=0 && val!=Constants.SOS_INTERVAL && val<2000) || val>3600000) {
             Log.d(Constants.LOG_TAG, "Interval Value " + val + " out of bounds.");
             return false;
         }
@@ -153,6 +175,19 @@ public class DisplayViewModel extends BaseViewModel {
             Log.d(Constants.LOG_TAG, "Error setting interval value "+e.getMessage());
             return false;
         }
+    }
+
+
+    public void unPair() {
+        try {
+            keyStore.deleteEntry(Constants.KEY_ALIAS);
+            this.getDatabase().removeValue();
+            this.getDatabase().child(Constants.DB_ENTRY_USERTYPE).setValue(Constants.USERTYPE_PARENT);
+        }
+        catch (Exception e){
+            Log.d(Constants.LOG_TAG, "Unable to unpair device. Error: "+e.getMessage());
+        }
+
     }
 
 }

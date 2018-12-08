@@ -6,6 +6,8 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -13,11 +15,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.carli.mychildtrackerdisplay.Model.Location;
+import com.example.carli.mychildtrackerdisplay.Utils.Constants;
+import com.example.carli.mychildtrackerdisplay.Utils.LocationAdapter;
 import com.example.carli.mychildtrackerdisplay.ViewModel.DisplayViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,12 +35,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.zxing.common.BitMatrix;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -55,23 +58,54 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
     AlertDialog.Builder builder;
     Location location;
     Button logOutButton;
+    Button unPairButton;
+    Button dismissSOSButton;
+    LinearLayout SOSLayout;
     ListView locationListView;
+    Vibrator vibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_display);
+        setContentView(R.layout.activity_display_x);
         displayViewModel = ViewModelProviders.of(this).get(DisplayViewModel.class);
 
         // initialize buttons and adapter
         initializeButtons();
         initializeAdapter();
         initializeDropdown();
+        initializeSOSListener();
 
         // initialize the map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+    }
+
+    public void initializeSOSListener(){
+        dismissSOSButton = findViewById(R.id.sosDismiss);
+        SOSLayout = findViewById(R.id.SOSLayout);
+        displayViewModel.getSOS().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean trigger) {
+                if (trigger != null){
+                    if (trigger.equals(true)){
+                        Log.d(Constants.LOG_TAG, "SOS alert triggered");
+                        SOSLayout.setVisibility(View.VISIBLE);
+                        if (vibrator != null && vibrator.hasVibrator()) {
+                            long[] timings = {0, 400, 200, 400, 200};
+                            vibrator.vibrate(VibrationEffect.createWaveform(timings, 2));
+                        }
+                    }
+                }
+            }
+        });
+        dismissSOSButton.setOnClickListener(view -> {
+            vibrator.cancel();
+            SOSLayout.setVisibility(View.INVISIBLE);
+        });
     }
 
     public void initializeButtons(){
@@ -84,6 +118,12 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
+        });
+        unPairButton = findViewById(R.id.bUnpair);
+        unPairButton.setOnClickListener(view -> {
+            displayViewModel.setInterval(-112);
+            displayViewModel.unPair();
+            logOutButton.callOnClick();
         });
 
     }
@@ -105,11 +145,12 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
     public void initializeDropdown(){
         // set the drop down view
         Spinner dropdown = findViewById(R.id.dropdownInterval);
-        String[] intervals = new String[]{"10 s", "30 s", "1 min", "5 min", "15 min", "30 min", "1 hour"};
+        String[] intervals = new String[]{"0 s", "10 s", "30 s", "1 min", "5 min", "15 min", "30 min", "1 hour"};
         ArrayAdapter<String> intervalAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, intervals);
 
         //set the spinners adapter to the previously created one
         dropdown.setAdapter(intervalAdapter);
+        dropdown.setSelection(4);
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

@@ -7,7 +7,7 @@ import android.security.keystore.KeyProtection;
 import android.util.Base64;
 import android.util.Log;
 
-import com.example.carli.mychildtrackerdisplay.Constants;
+import com.example.carli.mychildtrackerdisplay.Utils.Constants;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -193,7 +193,7 @@ public class PairingViewModel extends BaseViewModel {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Log.d(Constants.LOG_TAG, "Error getting securitycheck. Error: "+ databaseError.getMessage());
             }
         });
     }
