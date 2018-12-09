@@ -7,14 +7,12 @@ import android.util.Log;
 
 import com.example.carli.mychildtrackerdisplay.Utils.Constants;
 import com.example.carli.mychildtrackerdisplay.Model.UserEntry;
-import com.example.carli.mychildtrackerdisplay.Repository.FirebaseDatabaseRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
 
 public class BaseViewModel extends ViewModel {
 
-private FirebaseDatabaseRepository repository;
 private FirebaseUser user;
 private MutableLiveData<UserEntry> currentUser;
 

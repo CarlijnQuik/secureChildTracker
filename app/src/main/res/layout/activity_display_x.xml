@@ -101,6 +101,7 @@
             android:layout_weight="1"
             android:background="@color/alert_red"
             android:gravity="center_vertical"
+            android:scrollbars="vertical"
             android:text="@string/sos_alert"
             android:textAlignment="center"
             android:textColor="@color/cast_expanded_controller_text_color"

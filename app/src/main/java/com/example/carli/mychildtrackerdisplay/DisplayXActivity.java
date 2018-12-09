@@ -18,8 +18,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.carli.mychildtrackerdisplay.Model.DataWrapper;
 import com.example.carli.mychildtrackerdisplay.Model.Location;
 import com.example.carli.mychildtrackerdisplay.Utils.Constants;
 import com.example.carli.mychildtrackerdisplay.Utils.LocationAdapter;
@@ -62,6 +64,7 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
     Button dismissSOSButton;
     LinearLayout SOSLayout;
     ListView locationListView;
+    TextView SOSText;
     Vibrator vibrator;
 
     @Override
@@ -87,12 +90,14 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
     public void initializeSOSListener(){
         dismissSOSButton = findViewById(R.id.sosDismiss);
         SOSLayout = findViewById(R.id.SOSLayout);
+        SOSText = findViewById(R.id.sosText);
         displayViewModel.getSOS().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean trigger) {
                 if (trigger != null){
                     if (trigger.equals(true)){
                         Log.d(Constants.LOG_TAG, "SOS alert triggered");
+                        SOSText.setText(R.string.sos_alert);
                         SOSLayout.setVisibility(View.VISIBLE);
                         if (vibrator != null && vibrator.hasVibrator()) {
                             long[] timings = {0, 400, 200, 400, 200};
@@ -121,7 +126,7 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
         });
         unPairButton = findViewById(R.id.bUnpair);
         unPairButton.setOnClickListener(view -> {
-            displayViewModel.setInterval(-112);
+            displayViewModel.setInterval(Constants.SOS_INTERVAL);
             displayViewModel.unPair();
             logOutButton.callOnClick();
         });
@@ -157,10 +162,24 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
 
                 String interval = (String) parent.getAdapter().getItem(position);
                 String[] intervalSplit = interval.split("\\s+");
-                interval = intervalSplit[0];
-                if(intervalSplit[1].equals("s")) displayViewModel.setInterval(Integer.decode(interval)*1000);
-                if(intervalSplit[1].equals("min")) displayViewModel.setInterval(Integer.decode(interval)*1000*60);
-                if(intervalSplit[1].equals("hour")) displayViewModel.setInterval(Integer.decode(interval)*1000*3600);
+                Integer seconds = 0;
+                switch(intervalSplit[1]){
+                    case "s":
+                        seconds = Integer.decode(intervalSplit[0])*1000;
+                        break;
+                    case "min":
+                        seconds = Integer.decode(intervalSplit[0])*1000*60;
+                        break;
+                    case "hour":
+                        seconds = Integer.decode(intervalSplit[0])*1000*3600;
+                        break;
+                    default:
+                        seconds = Integer.decode(intervalSplit[0])*1000;
+                }
+                if (displayViewModel.setInterval(seconds))
+                    Toast.makeText(DisplayXActivity.this, "Refreshing interval set to "+interval, LENGTH_SHORT).show();
+                else
+                    Toast.makeText(DisplayXActivity.this, "Error setting refresh interval.", LENGTH_SHORT).show();
             }
 
             @Override
@@ -183,16 +202,19 @@ public class DisplayXActivity extends FragmentActivity implements OnMapReadyCall
     }
 
     private void subscribeToUpdates() {
-        displayViewModel.getCurrentLocation().observe(this, new Observer<Location>() {
-            @Override
-            public void onChanged(@Nullable Location currentLocation) {
-                Log.d(Constants.LOG_TAG,"Received new location: "+currentLocation.getLatitude()+"/"+currentLocation.getLongitude());
-                locationList.add(0, currentLocation);
-                if (locationList.size()>20)
-                    locationList.remove(20);
-                locationAdapter.notifyDataSetChanged();
-                setNowMarker(currentLocation, Color.RED, BitmapDescriptorFactory.HUE_RED, "Current location");
+        displayViewModel.getCurrentLocation().observe(this, currentLocation -> {
+            if (currentLocation.getError() != null){
+                SOSText.setText(currentLocation.getError().getMessage());
+                SOSLayout.setVisibility(View.VISIBLE);
+                return;
             }
+
+            Log.d(Constants.LOG_TAG,"Received new location: "+currentLocation.getData().getLatitude()+"/"+currentLocation.getData().getLongitude());
+            locationList.add(0, currentLocation.getData());
+            if (locationList.size()>20)
+                locationList.remove(20);
+            locationAdapter.notifyDataSetChanged();
+            setNowMarker(currentLocation.getData(), Color.RED, BitmapDescriptorFactory.HUE_RED, "Current location");
         });
     }
 

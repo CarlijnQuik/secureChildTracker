@@ -45,7 +45,6 @@ public class LocationAdapter extends BaseAdapter {
 
         if (locations != null) {
 
-            // iterate over the items in achievement arraylist
             Location location = locations.get(position);
 
             // initialize layout components for the listitem

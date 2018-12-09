@@ -133,8 +133,9 @@ public class PairingViewModel extends BaseViewModel {
         }
         else if (userType.equals(Constants.USERTYPE_PARENT)){
             SecretKey tempkey = null;
+            KeyGenerator keyGenerator;
             try {
-                KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES);
+                keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES);
                 keyGenerator.init(128);
                 tempkey = keyGenerator.generateKey();
                 saveKeyIntoKeystore(tempkey.getEncoded());
